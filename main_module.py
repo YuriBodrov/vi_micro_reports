@@ -74,7 +74,7 @@ def main(): ####################################################################
 	get_vms_swap_bal_instance = GetVmsSwapBal(conn_state, vc_service)
 	get_vms_swap_bal_instance.get_vm_swap_bal_func()
 
-	# 08 : Get vSphere HA VM Monitoring Action +
+	# 08 : Get vSphere HA VM Monitoring Action Errors +
 	get_trig_alarms_instance = GetTrigAlarms(conn_state, vc_service)
 	get_trig_alarms_instance.get_vm_trig_alrm_func()
 
