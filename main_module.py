@@ -16,17 +16,17 @@ NOTE : This Module is so-called 'Core Module'. We can run all Modules from here.
 # NOTE : Limit all lines to a Maximum of 90 characters (Best Practices!)
 #########################################################################################
 import sys
-from vcsa_connect_a          import VcConnectionSteps as VcConnSteps
-from clu_get_ha_dis_items_a  import GetClustersHADisabledClass as GetDisHAClu
-from esxi_ha_agent_dis_a     import GetESXisHAAgentDisabledClass as GetDisHAESXi
-from esxi_w_single_disk_a    import GetESXiWithSingleDskClass as SingleDskESXi
-from esxi_ntp_settings_a     import GetEsxiNtpSettings as GetNtpAnomEsxi
-from vm_w_old_snpshts_a      import GetOldVmSnpshts as GetVmOldSnapshots
-from vm_get_res_limits_a     import GetVmsResLimitClass as GetVmResLimit
-from vm_swap_balloon_val_a   import GetVmsSwapBalClass as GetVmsSwapBal
-from vm_ha_mon_action_evt_a  import GetVmsHaTrigAlrmClass as GetTrigAlarms
-from vm_cnsldtn_ndd_stat_a   import GetVmCnsldStatClass as GetCnsldtnStatus
-from vm_get_vmtools_status_a import GetVmToolsStatClass as GetVmToolsStat
+from vcsa_connect_module    import VcConnectionSteps as VcConnSteps
+from clu_get_ha_dis_items   import GetClustersHADisabledClass as GetDisHAClu
+from esxi_ha_agent_dis      import GetESXisHAAgentDisabledClass as GetDisHAESXi
+from esxi_w_single_disk     import GetESXiWithSingleDskClass as SingleDskESXi
+from esxi_ntp_anomalies     import GetEsxiNtpSettings as GetNtpAnomEsxi
+from vm_w_old_snpshts       import GetOldVmSnpshts as GetVmOldSnapshots
+from vm_get_res_limits      import GetVmsResLimitClass as GetVmResLimit
+from vm_swap_balloon_val    import GetVmsSwapBalClass as GetVmsSwapBal
+from vm_ha_mon_action_evnts import GetVmsHaTrigAlrmClass as GetTrigAlarms
+from vm_cnsldtn_ndd_stat    import GetVmCnsldStatClass as GetCnsldtnStatus
+from vm_get_vmtools_status  import GetVmToolsStatClass as GetVmToolsStat
 
 # Module for Prompting a Password with Echo Turned Off
 from getpass import getpass 
@@ -46,7 +46,6 @@ def main(): ####################################################################
      
 	assert vc_service is not None
 
-	"""
 	# 01 : Get an Old VMs Snapshots +
 	vm_old_snapshots = GetVmOldSnapshots(conn_state, vc_service)
 	vm_old_snapshots.get_old_vm_snpshts()
@@ -82,7 +81,6 @@ def main(): ####################################################################
 	# 09 : Get VMs with Snapshot's Consolidation Needed Status +
 	get_cnsldtn_ndd_instance = GetCnsldtnStatus(conn_state, vc_service)
 	get_cnsldtn_ndd_instance.get_vm_w_cnsld_ndd_func()
-	"""
 	
   # 10 : Get VMware Tools Status +
 	get_vm_tools_stat_instance = GetVmToolsStat(conn_state, vc_service)
