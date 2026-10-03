@@ -46,7 +46,7 @@ def main(): ####################################################################
      
 	assert vc_service is not None
 
-	# 01 : Get an Old VMs Snapshots +
+	# 01 : Get an Old (Older than 30 Days) VMs Snapshots +
 	vm_old_snapshots = GetVmOldSnapshots(conn_state, vc_service)
 	vm_old_snapshots.get_old_vm_snpshts()
 	
