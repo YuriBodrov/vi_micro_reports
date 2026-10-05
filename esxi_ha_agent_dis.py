@@ -90,6 +90,7 @@ class GetESXisHAAgentDisabledClass(): ##########################################
 				#	self.clusters_ha_disabled_list.append(cluster.name)
 				# Map 'dasFdmHostState' Elements 
 				"""
+			container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 			print("Done.")
 			print("")
 			sleep(2)

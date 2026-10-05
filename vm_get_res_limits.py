@@ -142,6 +142,7 @@ class GetVmsResLimitClass(): ###################################################
 						print("")
 						"""
 
+				container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 				print("Done.")
 				time.sleep(2)
 				print("")

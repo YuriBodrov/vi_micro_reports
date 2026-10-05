@@ -129,8 +129,7 @@ class GetVmsHaTrigAlrmClass(): #################################################
 
 			stdout.write(f"[INFO] : VM. Collecting HA Monitoring Action Triggered Alarms...")
 			stdout.flush()
-			#print(f"[INFO] : VM. Collecting HA Monitoring Action Triggered Alarms...")
-			for alrm_state in trig_alrms:     				 # type: ignore
+			for alrm_state in trig_alrms:     				 								# type: ignore
 				pass
 				# Get only Useful Information from all Alarms Data:
 				alarm      = alrm_state.alarm
@@ -144,12 +143,8 @@ class GetVmsHaTrigAlrmClass(): #################################################
 									alrm_state.time.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
 					active_xlsx_sheet.append(xlsx_data)
 					xlsx_wb.save("report.xlsx")
-					#print(f"Alarm  : {alarm_info.name}")
-					#print(f"Object : {vm_entity_name}")
-					#print(f"Status/Color : {alrm_state.overallStatus}")
-					#print(f"Datetime : {alrm_state.time.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]}")
-					#print("-" * 50)
 
+			container.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 			print("Done.")
 			sleep(2)
 			print ("")

@@ -119,9 +119,6 @@ class GetESXiWithSingleDskClass(): #############################################
 			stdout.write(f"[INFO] : Collecting Single-Disk ESXi Servers...")
 			stdout.flush()
 			for host in container_view.view:
-				#self.host_collection_list.append(host.name)
-				#print(f"ESXi Host: {host.name}")
-				#assert host.datastore is not None
 				# NOTE! len(host.datastore) : Count ESXi Server's Datastores
 				for ds in host.datastore: # type: ignore
 					#print(f"  - Datastore: {ds.name} (Capacity: {ds.summary.capacity / \
@@ -134,9 +131,8 @@ class GetESXiWithSingleDskClass(): #############################################
 						active_xlsx_sheet.append(xlsx_data) # type: ignore
 						xlsx_wb.save("report.xlsx")         # type: ignore
 
-			#print("-" * 47)
+			container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 			print("Done.")
 			time.sleep(2)
 			print("")
 
-			#return self.esxi_w_sngl_dks_list

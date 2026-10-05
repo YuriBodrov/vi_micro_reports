@@ -97,13 +97,13 @@ class GetEsxiNtpSettings(): ####################################################
 					for s_name in esxi_services_data.serviceInfo.service:
 						if (s_name.key == "ntpd"): # If Service Name is 'ntpd'
 							if (not s_name.running): 
-								#print(f"{host.name} | {s_name.key} | {s_name.policy} | {s_name.running}")
 								if (s_name.running == False):
 									s_name_run_state = "Stopped"
 								xlsx_data = (host.name, s_name.key, s_name.policy, s_name_run_state)
 								active_xlsx_sheet.append(xlsx_data) # type: ignore
 								xlsx_wb.save("report.xlsx")         # type: ignore
 				 
+			container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 			print("Done.")
 			sleep(2)
 			print("")

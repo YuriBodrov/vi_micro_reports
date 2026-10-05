@@ -89,6 +89,7 @@ class GetVmsSwapBalClass(): ####################################################
 						active_xlsx_sheet.append(xlsx_data) # type: ignore
 						xlsx_wb.save("report.xlsx")         # type: ignore
 
+				container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 				print("Done.")
 				time.sleep(2)
 				print("")
