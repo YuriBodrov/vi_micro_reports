@@ -1,4 +1,4 @@
-# Project Name  :                     Report-as-a-Service  
+# Project Name  :  Virtual Infrastructure's Micro Reports  
 # ------------------------------------------------------- 
 # Module Name   :         					    	 gethadisclu.py 
 # Created by    :       									 Yuri P. Bodrov 
@@ -40,29 +40,29 @@ class GetClustersHADisabledClass(): ############################################
 			xlsx_wb = openpyxl.load_workbook("report.xlsx")
 
 			# Create a Thematic Sheet and Set it as Active
-			if (not ("vsphere_ha_dis_clusters" in xlsx_wb.sheetnames)):
+			if (not ("clu_vsphere_ha_disabled" in xlsx_wb.sheetnames)):
 				pass
-				xlsx_wb.create_sheet(title="vsphere_ha_dis_clusters")
-				active_xlsx_sheet = xlsx_wb["vsphere_ha_dis_clusters"] # type: ignore
+				xlsx_wb.create_sheet(title="clu_vsphere_ha_disabled")
+				active_xlsx_sheet = xlsx_wb["clu_vsphere_ha_disabled"] 		# type: ignore
 
 				# Set the Column Headers of Active XLSX Sheet
 				column_header_list = ["Cluster Name", "vSphere HA Status"]
-				active_xlsx_sheet.append(column_header_list) # type: ignore
-				xlsx_wb.save("report.xlsx")                  # type: ignore
+				active_xlsx_sheet.append(column_header_list) 							# type: ignore
+				xlsx_wb.save("report.xlsx")                  							# type: ignore
 			else:
 				pass
-				active_xlsx_sheet = xlsx_wb["vsphere_ha_dis_clusters"] # type: ignore
+				active_xlsx_sheet = xlsx_wb["clu_vsphere_ha_disabled"] 		# type: ignore
 					
 			stdout.write(f"[INFO] : HA Disabled. Collecting Cluster Names...")
 			stdout.flush()
 
 			for cluster in container_view.view:
 				# Check If HA Enabled in the Particular Cluster
-				ha_enabled_bool = cluster.configuration.dasConfig.enabled
+				ha_enabled_bool = cluster.configuration.dasConfig.enabled # type: ignore
 				if (not ha_enabled_bool):
 					xlsx_data = (cluster.name, "Disabled")
-					active_xlsx_sheet.append(xlsx_data) # type: ignore
-					xlsx_wb.save("report.xlsx")         # type: ignore
+					active_xlsx_sheet.append(xlsx_data) 										# type: ignore
+					xlsx_wb.save("report.xlsx")         										# type: ignore
 				 
 			container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 			print("Done.")

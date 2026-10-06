@@ -18,6 +18,10 @@ from dataclasses import dataclass                  # Operations with Data Classe
 from time import sleep                             # Time Delaying and Sleep() Function
 from pyVmomi import vim                            # Core Operations with VI Objects
 from openpyxl import Workbook                      # For an Operations with MS Excel File
+from openpyxl.styles import Font									 # This Class provides All 
+																									 # Font Customization Types
+#from openpyxl.styles import DEFAULT_FONT					 # This Class sets the Default Font for
+																									 # all Worksheets within Workbook
 
 @dataclass # Main Class of this Module 'vmswoldsnaps.py'
 class GetOldVmSnpshts(): ################################################################
@@ -71,31 +75,31 @@ class GetOldVmSnpshts(): #######################################################
 				recursive = True                  # Include SubDirs within Root/Parent Directory
 
 				assert vi_content.viewManager is not None 
-				container_view = vi_content.viewManager.CreateContainerView\
-					(container, view_type, recursive)
+				container_view = vi_content.viewManager.CreateContainerView(container, \
+				                                                            view_type, recursive)
 
 				days_limit = 30 # Snapshot Age Threshold in Days
-				
+								
 				# NOTE : Declare and Initialize MS Excel File
 				xlsx_wb = Workbook()
-
+				
 				# NOTE : Create a Thematic Sheet and Set it as Active
-				xlsx_wb.create_sheet(title="old_snapshots")
-				active_xlsx_sheet = xlsx_wb["old_snapshots"] 
-
+				xlsx_wb.create_sheet(title="vm_old_snapshots")
+				active_xlsx_sheet = xlsx_wb["vm_old_snapshots"]
+				
 				# NOTE : Set the Column Headers of Active XLSX Sheet 
 				column_header_list = ["VM Name", "Snapshot ID", "Snapshot Name", \
 													"Creation Date", "Age in Days"]
-				active_xlsx_sheet.append(column_header_list) # type: ignore
-				xlsx_wb.save("report.xlsx")                  # type: ignore
+				active_xlsx_sheet.append(column_header_list) 					 # type: ignore
+				xlsx_wb.save("report.xlsx")                  					 # type: ignore
 
 				for vm in container_view.view:
 					pass
 					# Check If there are any Snapshots of a Particular VM
-					if ((vm.snapshot) and (vm.snapshot.rootSnapshotList)):
+					if (vm.snapshot) and (vm.snapshot.rootSnapshotList): # type: ignore
 						pass
 						vm_old_snpshts_list = self.get_snpsht_data\
-							(vm.snapshot.rootSnapshotList, days_limit)
+							(vm.snapshot.rootSnapshotList, days_limit)			 # type: ignore
 
 						if (vm_old_snpshts_list): # Check If this List exists
 							for snpsht in vm_old_snpshts_list:
@@ -103,7 +107,23 @@ class GetOldVmSnpshts(): #######################################################
 								xlsx_data = (vm.name, snpsht["id"], snpsht["name"], \
 										 snpsht["created"].strftime("%Y-%m-%d"), age_in_days)
 								active_xlsx_sheet.append(xlsx_data) # type: ignore
-								xlsx_wb.save("report.xlsx")         # type: ignore				
+								xlsx_wb.save("report.xlsx")         # type: ignore
+
+				"""
+				TODO : This Block of Code must be a Function/Method!
+				---------------------------------------------------------------------------------
+				# Create a New Sheet's Font Style
+				new_font_style = Font(name = "Segoe UI", size = 10, bold = False, italic = False)
+				
+				# Iterate through all Filled Cells on the Worksheet
+				for row in active_xlsx_sheet.iter_rows(min_row = 1, \
+				  max_row = active_xlsx_sheet.max_row, min_col = 1, \
+						max_col = active_xlsx_sheet.max_column):
+					for cell in row:
+						cell.font = new_font_style
+				xlsx_wb.save("report.xlsx")
+				---------------------------------------------------------------------------------
+				"""
 
 				container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 				print(f"Done.")

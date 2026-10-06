@@ -1,4 +1,4 @@
-# Project Name  : 										Report-as-a-Service  
+# Project Name  :  Virtual Infrastructure's Micro Reports  
 # ------------------------------------------------------- 
 # Module Name   :         					    esxihaagentdis.py 
 # Created by    :       									 Yuri P. Bodrov 
@@ -48,29 +48,24 @@ class GetESXisHAAgentDisabledClass(): ##########################################
 
 				# Set the Column Headers of Active XLSX Sheet
 				column_header_list = ["ESXi Server", "vSphere HA Agent State"]
-				active_xlsx_sheet.append(column_header_list) # type: ignore
-				xlsx_wb.save("report.xlsx")                  # type: ignore
+				active_xlsx_sheet.append(column_header_list) 					# type: ignore
+				xlsx_wb.save("report.xlsx")                  					# type: ignore
 			else:
 				pass
 				active_xlsx_sheet = xlsx_wb["esxi_ha_agent_disabled"] # type: ignore
 		
 			stdout.write(f"[INFO] : HA Agent Disabled. Collecting ESXi Hostnames...")
 			stdout.flush()
-			#print("-" * 56)
 			for host in container_view.view:
-				#print(f"ESXi Server : {host.name}")
-				das_info = host.runtime.dasHostState
+				das_info = host.runtime.dasHostState									# type: ignore
 
 				if (das_info and hasattr(das_info, "state")):
-					#print(f"	vSphere HA State: {das_info.state}")
 					pass
 				else:
-					#print(f"	vSphere HA State: Disabled or Unset")
-					#self.esxi_ha_agnt_dsbld_list.append(host.name)
 					pass
 					xlsx_data = (host.name, "Disabled")
-					active_xlsx_sheet.append(xlsx_data) # type: ignore
-					xlsx_wb.save("report.xlsx")         # type: ignore
+					active_xlsx_sheet.append(xlsx_data) 								# type: ignore
+					xlsx_wb.save("report.xlsx")         								# type: ignore
 
 				
 				"""
@@ -90,6 +85,7 @@ class GetESXisHAAgentDisabledClass(): ##########################################
 				#	self.clusters_ha_disabled_list.append(cluster.name)
 				# Map 'dasFdmHostState' Elements 
 				"""
+			
 			container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 			print("Done.")
 			print("")

@@ -52,29 +52,29 @@ class GetVmCnsldStatClass(): ###################################################
 				xlsx_wb = openpyxl.load_workbook("report.xlsx")
 
 				# Create a Thematic Sheet and Set it as Active
-				if (not ("vms_with_cnsldn_ndd_stat" in xlsx_wb.sheetnames)):
+				if (not ("vm_consolidation_needed" in xlsx_wb.sheetnames)):
 					pass
-					xlsx_wb.create_sheet(title = "vms_with_cnsldn_ndd_stat")
-					active_xlsx_sheet = xlsx_wb["vms_with_cnsldn_ndd_stat"] 
+					xlsx_wb.create_sheet(title = "vm_consolidation_needed")
+					active_xlsx_sheet = xlsx_wb["vm_consolidation_needed"] 
 
 					# Set the Column Headers of Active XLSX Sheet
 					column_header_list = ["VM Name", "Consolidation Needed"]
 					active_xlsx_sheet.append(column_header_list) 						
 					xlsx_wb.save("report.xlsx")                  					 	
 				else:
-					active_xlsx_sheet = xlsx_wb["vms_with_cnsldn_ndd_stat"] 
+					active_xlsx_sheet = xlsx_wb["vm_consolidation_needed"] 
 
 				for vm in container_view.view:
 					pass
 					# Avoid crashing if the Runtime Data is Temporarily Unavailable
 					if (vm.runtime):
 						pass
-						cnsldtn_status = vm.runtime.consolidationNeeded
+						cnsldtn_status = vm.runtime.consolidationNeeded # type: ignore
 
 						# Print VM Names Only with this Status
 						if (cnsldtn_status):						
 							xlsx_data = (vm.name, str(cnsldtn_status))
-							active_xlsx_sheet.append(xlsx_data) # type: ignore
+							active_xlsx_sheet.append(xlsx_data) 					# type: ignore
 							xlsx_wb.save("report.xlsx")         
 
 				container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server

@@ -114,18 +114,18 @@ class GetVmsHaTrigAlrmClass(): #################################################
 			xlsx_wb = openpyxl.load_workbook("report.xlsx")
 
 			# Create a Thematic Sheet and Set it as Active
-			if (not ("vms_with_ha_monitor_errs" in xlsx_wb.sheetnames)):
+			if (not ("vm_ha_monitor_errors" in xlsx_wb.sheetnames)):
 				pass
-				xlsx_wb.create_sheet(title = "vms_with_ha_monitor_errs")
-				active_xlsx_sheet = xlsx_wb["vms_with_ha_monitor_errs"] # type: ignore
+				xlsx_wb.create_sheet(title = "vm_ha_monitor_errors")
+				active_xlsx_sheet = xlsx_wb["vm_ha_monitor_errors"] # type: ignore
 
 				# Set the Column Headers of Active XLSX Sheet
 				column_header_list = ["VM Name", "Event Data", "Status/Color", "Event's Datetime"]
-				active_xlsx_sheet.append(column_header_list) 						# type: ignore
-				xlsx_wb.save("report.xlsx")                  						# type: ignore
+				active_xlsx_sheet.append(column_header_list)				# type: ignore
+				xlsx_wb.save("report.xlsx")                  				# type: ignore
 
 			else:
-				active_xlsx_sheet = xlsx_wb["vms_with_ha_monitor_errs"] # type: ignore
+				active_xlsx_sheet = xlsx_wb["vm_ha_monitor_errors"] # type: ignore
 
 			stdout.write(f"[INFO] : VM. Collecting HA Monitoring Action Triggered Alarms...")
 			stdout.flush()

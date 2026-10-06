@@ -1,4 +1,4 @@
-# Project Name  : 										Report-as-a-Service  
+# Project Name  :  Virtual Infrastructure's Micro Reports  
 # ------------------------------------------------------- 
 # Module Name   :         					 esxi_ntp_settings.py 
 # Created by    :       									 Yuri P. Bodrov 

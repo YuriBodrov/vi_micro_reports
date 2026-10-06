@@ -71,10 +71,10 @@ class GetVmsResLimitClass(): ###################################################
 				xlsx_wb = openpyxl.load_workbook("report.xlsx")
 
 				# Create a Thematic Sheet and Set it as Active
-				if (not ("vms_with_resources_limit" in xlsx_wb.sheetnames)):
+				if (not ("vm_resources_limits" in xlsx_wb.sheetnames)):
 					pass
-					xlsx_wb.create_sheet(title = "vms_with_resources_limit")
-					active_xlsx_sheet = xlsx_wb["vms_with_resources_limit"] # type: ignore
+					xlsx_wb.create_sheet(title = "vm_resources_limits")
+					active_xlsx_sheet = xlsx_wb["vm_resources_limits"] # type: ignore
 
 					# Set the Column Headers of Active XLSX Sheet
 					column_header_list = ["VM Name", "CPU Limit (MHz)", "CPU Reservation (MHz)", \
@@ -84,7 +84,7 @@ class GetVmsResLimitClass(): ###################################################
 					active_xlsx_sheet.append(column_header_list) # type: ignore
 					xlsx_wb.save("report.xlsx")                  # type: ignore
 				else:
-					active_xlsx_sheet = xlsx_wb["vms_with_resources_limit"] # type: ignore
+					active_xlsx_sheet = xlsx_wb["vm_resources_limits"] # type: ignore
 
 				for vm in container_view.view:
 					pass

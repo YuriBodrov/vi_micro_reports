@@ -63,22 +63,22 @@ class GetVmsSwapBalClass(): ####################################################
 				xlsx_wb = openpyxl.load_workbook("report.xlsx")
 
 				# Create a Thematic Sheet and Set it as Active
-				if (not ("vms_with_swap_balloon_vals" in xlsx_wb.sheetnames)):
+				if (not ("vm_swap_balloon_values" in xlsx_wb.sheetnames)):
 					pass
-					xlsx_wb.create_sheet(title = "vms_with_swap_balloon_vals")
-					active_xlsx_sheet = xlsx_wb["vms_with_swap_balloon_vals"] # type: ignore
+					xlsx_wb.create_sheet(title = "vm_swap_balloon_values")
+					active_xlsx_sheet = xlsx_wb["vm_swap_balloon_values"] # type: ignore
 
 					# Set the Column Headers of Active XLSX Sheet
 					column_header_list = ["VM Name", "Swap Value (MB)", "Balloon Value (MB)"]
 					active_xlsx_sheet.append(column_header_list) 							# type: ignore
 					xlsx_wb.save("report.xlsx")                  							# type: ignore
 				else:
-					active_xlsx_sheet = xlsx_wb["vms_with_swap_balloon_vals"] # type: ignore
+					active_xlsx_sheet = xlsx_wb["vm_swap_balloon_values"] # type: ignore
 
 				for vm in container_view.view:
 					pass
 
-					q_stats         = vm.summary.quickStats
+					q_stats         = vm.summary.quickStats # type: ignore
 					q_stats_swap    = q_stats.swappedMemory
 					q_stats_balloon = q_stats.balloonedMemory 
 
@@ -86,8 +86,8 @@ class GetVmsSwapBalClass(): ####################################################
 						pass
 
 						xlsx_data = (vm.name, q_stats_swap, q_stats_balloon)
-						active_xlsx_sheet.append(xlsx_data) # type: ignore
-						xlsx_wb.save("report.xlsx")         # type: ignore
+						active_xlsx_sheet.append(xlsx_data) 	# type: ignore
+						xlsx_wb.save("report.xlsx")         	# type: ignore
 
 				container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 				print("Done.")
