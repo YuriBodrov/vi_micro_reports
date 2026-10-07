@@ -50,6 +50,7 @@ def main(): ####################################################################
 	vm_old_snapshots = GetVmOldSnapshots(conn_state, vc_service)
 	vm_old_snapshots.get_old_vm_snpshts()
 	
+	"""
 	# 02 : Get the ESXi Server's NTP Settings Anomalies +
 	get_esxi_ntp_set = GetNtpAnomEsxi(conn_state, vc_service)
 	get_esxi_ntp_set.get_esxi_ntp_set_func()
@@ -85,20 +86,6 @@ def main(): ####################################################################
   # 10 : Get VMware Tools Status +
 	get_vm_tools_stat_instance = GetVmToolsStat(conn_state, vc_service)
 	get_vm_tools_stat_instance.get_vm_tools_stat_func()
-     
-	"""
-	# Get the ESXi Server's Multipath Round-Robin Limit
-	get_esxi_mp_rr_set = GetMpRrLimitSet(conn_state, vc_service)
-	get_esxi_mp_rr_set.get_esxi_mp_rr_lim_func()
-
-	print("")
-	"""
-
-	"""
-	# Get the ESXi Server's Boot Device Errors
-	esxi_boot_dev_err_instance = GetEsxiBootErrors(conn_state, vc_service)
-	esxi_boot_dev_err_instance.esxi_get_boot_dev_err_func()
-	print("")
 	"""
   
 if __name__ == "__main__":

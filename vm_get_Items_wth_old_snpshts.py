@@ -12,10 +12,12 @@ NOTE : This Module is used to retrieve an Old VMs Snapshots.
 This Module's Function returns "VM_NAME|SNPSHT_ID|SNPSHT_NAME|C_DATE|DAYS_GONE" List.
 """
 #########################################################################################
+from interaction_methods_set import InteractMethodsClass as IMClass
 from sys import stdout						                 # Function for an Output Print Options
 from datetime import datetime, timedelta, timezone # For Datetime Operations
 from dataclasses import dataclass                  # Operations with Data Classes
 from time import sleep                             # Time Delaying and Sleep() Function
+from time import perf_counter      								 # Function to Get Method's Runtime
 from pyVmomi import vim                            # Core Operations with VI Objects
 from openpyxl import Workbook                      # For an Operations with MS Excel File
 from openpyxl.styles import Font									 # This Class provides All 
@@ -33,6 +35,9 @@ class GetOldVmSnpshts(): #######################################################
 	NOTE : This Function Recursively figuring the Snapshot Tree and returns Snapshots 
 																							Older than a Specified Number of Days
 	"""
+
+	func_start_time = perf_counter() # Record the Start Time
+	
 	def get_snpsht_data(self, snpsht_lst, days_gone): # type: ignore ######################
 		pass
 		old_snpshts_lst = [] # Define this Variable as VM's Snapshots List
@@ -124,10 +129,17 @@ class GetOldVmSnpshts(): #######################################################
 				xlsx_wb.save("report.xlsx")
 				---------------------------------------------------------------------------------
 				"""
+				imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "report.xlsx")
+				imclass_instance.add_text_style_func()
 
 				container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
-				print(f"Done.")
+				
+				func_stop_time = perf_counter() 											 # Record the Start Time
+				func_exec_time = func_stop_time - self.func_start_time # Calculate the Difference
+
+				print(f"Done. Execution Time is {func_exec_time:.6f}")
 				print("")
+				print(f"active_xlsx_sheet type is : {type(active_xlsx_sheet)}")
 				sleep(2)
 
 		except Exception as xex:
