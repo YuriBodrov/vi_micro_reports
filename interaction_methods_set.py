@@ -8,7 +8,7 @@
 # LinkedIn Page : https://www.linkedin.com/in/yuribodrov/
 
 """
-NOTE : This Module is used for the VMware vSphere Clusters with 'vSphere HA
-			 					  in Disabled State' Collection from VMware Infrastructure.
+NOTE : This Module is just a Set of Methods for facilitating Interaction between 
+			 Components and Variables
 """
 #########################################################################################

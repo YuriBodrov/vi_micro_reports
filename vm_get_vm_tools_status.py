@@ -1,6 +1,6 @@
-# Project Name  : 										Report-as-a-Service  
+# Project Name  :  Virtual Infrastructure's Micro Reports  
 # ------------------------------------------------------- 
-# Module Name   :         				 vm_swap_balloon_val.py 
+# Module Name   :         			vm_get_vm_tools_status.py 
 # Created by    :       									 Yuri P. Bodrov 
 # Email         : 									 bodrovyp@hotmail.com 
 # Phone Number  :         									 +79259929596 
@@ -10,13 +10,20 @@
 """
 NOTE
 -----------------------------------------------------------------------------------------
-if vm.runtime.consolidationNeeded:
-    print(f"Triggering disk consolidation for {vm.name}...")
-    task = vm.ConsolidateVMDisks_Task()
+vm.guest.toolsStatus        : Overall Status
+vm.guest.toolsRunningStatus : Service Operational Status
+vm.guest.toolsVersion       : VMware Tools Software Version
+
+"toolsStatus" Values
+----------------------------------------------------------------------------------------
+toolsOk           : VMware Tools are Installed, Running, and Up to Date
+toolsOld          : The Service are Running, but a Newer Version is Available for Update
+toolsNotRunning   : The Utility is installed, but the Service is not Active/Running
+toolsNotInstalled : VMware Tools have Never been Installed or have Never been Run
 """
 
 """
-NOTE : This Module is used to collect VMs with Consolidation Needed Status 
+NOTE : This Module is used to collect VMware Tools Status from all VMs 
 """
 #########################################################################################
 from sys import stdout						 # Function for an Output Print Options
@@ -25,17 +32,17 @@ import time                        # Namespace for the Time Delaying and Sleep()
 from pyVmomi import vim            # Namespace for a Core Operations with VI Objects
 import openpyxl                    # For an Operations with MS Excel File(s)
 
-@dataclass # Main Class of this Module 'vm_swap_balloon_val.py'
-class GetVmCnsldStatClass(): ############################################################
+@dataclass # Main Class of this Module 'vm_get_vm_tools_status.py'
+class GetVmToolsStatClass(): ############################################################
 	pass
 	connstate  : bool                # Is vCenter Server Connected : True/False
 	vc_instance: vim.ServiceInstance # Passing SmartConnect Service Instance
 
-	def get_vm_w_cnsld_ndd_func(self): ####################################################
+	def get_vm_tools_stat_func(self): #####################################################
 		pass
 
 		try:
-			stdout.write("[INFO] : Collecting VMs With Consolidation Needed Status...")
+			stdout.write("[INFO] : Collecting VMware Tools Status...")
 			stdout.flush()
 		
 			vi_content = self.vc_instance.RetrieveContent()
@@ -52,30 +59,34 @@ class GetVmCnsldStatClass(): ###################################################
 				xlsx_wb = openpyxl.load_workbook("report.xlsx")
 
 				# Create a Thematic Sheet and Set it as Active
-				if (not ("vm_consolidation_needed" in xlsx_wb.sheetnames)):
+				if (not ("vm_vmware_tools_status" in xlsx_wb.sheetnames)):
 					pass
-					xlsx_wb.create_sheet(title = "vm_consolidation_needed")
-					active_xlsx_sheet = xlsx_wb["vm_consolidation_needed"] 
+					xlsx_wb.create_sheet(title = "vm_vmware_tools_status")
+					active_xlsx_sheet = xlsx_wb["vm_vmware_tools_status"] 
 
 					# Set the Column Headers of Active XLSX Sheet
-					column_header_list = ["VM Name", "Consolidation Needed"]
+					column_header_list = ["VM Name", "VMware Tools Service Status", \
+													 "VMware Tools Software Status", "VMware Tools Version"]
 					active_xlsx_sheet.append(column_header_list) 						
 					xlsx_wb.save("report.xlsx")                  					 	
 				else:
-					active_xlsx_sheet = xlsx_wb["vm_consolidation_needed"] 
+					active_xlsx_sheet = xlsx_wb["vm_vmware_tools_status"] 
 
 				for vm in container_view.view:
 					pass
-					# Avoid crashing if the Runtime Data is Temporarily Unavailable
-					if (vm.runtime):
+					if (vm.runtime): # Avoid crashing if the Runtime Data is Unavailable
 						pass
-						cnsldtn_status = vm.runtime.consolidationNeeded # type: ignore
+						# Get Software Status:
+						vm_tools_sw_status  = vm.guest.toolsStatus        # type: ignore
+						# Get Service Status:
+						vm_tools_run_status = vm.guest.toolsRunningStatus # type: ignore
+						# Get Version:
+						vm_tools_version    = vm.guest.toolsVersion       # type: ignore
 
-						# Print VM Names Only with this Status
-						if (cnsldtn_status):						
-							xlsx_data = (vm.name, str(cnsldtn_status))
-							active_xlsx_sheet.append(xlsx_data) 					# type: ignore
-							xlsx_wb.save("report.xlsx")         
+						xlsx_data = (vm.name, vm_tools_run_status, vm_tools_sw_status, \
+									 vm_tools_version)
+						active_xlsx_sheet.append(xlsx_data) 							# type: ignore
+						xlsx_wb.save("report.xlsx")         
 
 				container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 				print("Done.")

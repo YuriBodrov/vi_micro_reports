@@ -1,6 +1,6 @@
-# Project Name  : 										Report-as-a-Service  
+# Project Name  :  Virtual Infrastructure's Micro Reports  
 # ------------------------------------------------------- 
-# Module Name   :         					 vm_get_res_limits.py 
+# Module Name   :         		 vm_get_resources_limits.py 
 # Created by    :       									 Yuri P. Bodrov 
 # Email         : 									 bodrovyp@hotmail.com 
 # Phone Number  :         									 +79259929596 
@@ -39,7 +39,7 @@ import time                       # Namespace for the Time Delaying and Sleep() 
 from pyVmomi import vim           # Namespace for a Core Operations with VI Objects
 import openpyxl                   # For an Operations with MS Excel File(s)
 
-@dataclass # Main Class of this Module 'vm_get_res_limits.py'
+@dataclass # Main Class of this Module 'vm_get_resources_limits.py'
 class GetVmsResLimitClass(): ############################################################
 	pass
 	connstate  : bool                # Is vCenter Server Connected : True/False
@@ -74,17 +74,17 @@ class GetVmsResLimitClass(): ###################################################
 				if (not ("vm_resources_limits" in xlsx_wb.sheetnames)):
 					pass
 					xlsx_wb.create_sheet(title = "vm_resources_limits")
-					active_xlsx_sheet = xlsx_wb["vm_resources_limits"] # type: ignore
+					active_xlsx_sheet = xlsx_wb["vm_resources_limits"] 				 # type: ignore
 
 					# Set the Column Headers of Active XLSX Sheet
 					column_header_list = ["VM Name", "CPU Limit (MHz)", "CPU Reservation (MHz)", \
 													"CPU Shares Level", "CPU Shares Value", "RAM Limit (MB)", \
 														"RAM Reservation (MB)", "RAM Shares Level", \
 															"RAM Shares Value", "RAM Locked to Max?"]
-					active_xlsx_sheet.append(column_header_list) # type: ignore
-					xlsx_wb.save("report.xlsx")                  # type: ignore
+					active_xlsx_sheet.append(column_header_list) 							 # type: ignore
+					xlsx_wb.save("report.xlsx")                  							 # type: ignore
 				else:
-					active_xlsx_sheet = xlsx_wb["vm_resources_limits"] # type: ignore
+					active_xlsx_sheet = xlsx_wb["vm_resources_limits"] 				 # type: ignore
 
 				for vm in container_view.view:
 					pass
@@ -101,30 +101,33 @@ class GetVmsResLimitClass(): ###################################################
 					vm_ram_shares_val = "Not set"
 					"""
 					
-					vm_cpu_alloc = vm.config.cpuAllocation                     # Get VM's CPU 
-																																		 # Allocation Summary
-					vm_ram_alloc = vm.config.memoryAllocation                  # Get VM's Memory
-																																		 # Allocation Summary
-					vm_ram_are_locked = vm.config.memoryReservationLockedToMax # If Memory Locked?
+					# Get VM's CPU Allocation Summary
+					# Get VM's Memory Allocation Summary
+					# Get VM's "All Guest Memory is Locked" Status
+					vm_cpu_alloc = vm.config.cpuAllocation                     # type: ignore
+					vm_ram_alloc = vm.config.memoryAllocation                  # type: ignore
+					vm_ram_are_locked = vm.config.memoryReservationLockedToMax # type: ignore
+					
 					# If we have some CPU/RAM Limits (.limit = -1 : "Unlimited")
 					if ((vm_cpu_alloc.limit != -1) or (vm_ram_alloc.limit != -1)):
-					#if (vm_ram_alloc.limit != -1):  
 						pass
-						vm_cpu_limit      = vm_cpu_alloc.limit         #
-						vm_cpu_rsrvtn     = vm_cpu_alloc.reservation   # CPU Limits
-						vm_cpu_shares_lvl = vm_cpu_alloc.shares.level  # and Shares Data
-						vm_cpu_shares_val = vm_cpu_alloc.shares.shares #
+						# CPU Limits and Shares Data:
+						vm_cpu_limit      = vm_cpu_alloc.limit   
+						vm_cpu_rsrvtn     = vm_cpu_alloc.reservation  
+						vm_cpu_shares_lvl = vm_cpu_alloc.shares.level  
+						vm_cpu_shares_val = vm_cpu_alloc.shares.share
 
-						vm_ram_limit      = vm_ram_alloc.limit         # 
-						vm_ram_rsrvtn     = vm_ram_alloc.reservation   # Memory Limits 
-						vm_ram_shares_lvl = vm_ram_alloc.shares.level  # and Shares data
-						vm_ram_shares_val = vm_ram_alloc.shares.shares # 
+						# Memory Limits and Shares Data:
+						vm_ram_limit      = vm_ram_alloc.limit 
+						vm_ram_rsrvtn     = vm_ram_alloc.reservation 
+						vm_ram_shares_lvl = vm_ram_alloc.shares.level
+						vm_ram_shares_val = vm_ram_alloc.shares.shares
 
 						xlsx_data = (vm.name, vm_cpu_limit, vm_cpu_rsrvtn, vm_cpu_shares_lvl, \
 									 vm_cpu_shares_val, vm_ram_limit, vm_ram_rsrvtn, vm_ram_shares_lvl, \
 										vm_ram_shares_val, vm_ram_are_locked)
-						active_xlsx_sheet.append(xlsx_data) # type: ignore
-						xlsx_wb.save("report.xlsx")         # type: ignore
+						active_xlsx_sheet.append(xlsx_data) 										 # type: ignore
+						xlsx_wb.save("report.xlsx")         										 # type: ignore
 
 						"""
 						print(f"vm_name : {vm.name}")

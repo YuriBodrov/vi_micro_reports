@@ -1,6 +1,6 @@
 # Project Name  :  Virtual Infrastructure's Micro Reports  
 # ------------------------------------------------------- 
-# Module Name   :         					    	 gethadisclu.py 
+# Module Name   :       clu_get_vsphere_ha_dsbld_items.py 
 # Created by    :       									 Yuri P. Bodrov 
 # Email         : 									 bodrovyp@hotmail.com 
 # Phone Number  :         									 +79259929596 
@@ -12,13 +12,13 @@ NOTE : This Module is used for the VMware vSphere Clusters with 'vSphere HA
 			 					  in Disabled State' Collection from VMware Infrastructure.
 """
 #########################################################################################
-from sys import stdout            # Function for an Output Print Options
-from dataclasses import dataclass # Namespace for Operations with Data Classes
-from time import sleep            # Function for the Time Delaying
-from pyVmomi import vim           # Namespace for a Core Operations with VI Objects
-import openpyxl                   # For an Operations with MS Excel File(s)
+from sys import stdout             # Function for an Output Print Options
+from dataclasses import dataclass  # Namespace for Operations with Data Classes
+from time import sleep             # Function for the Time Delaying
+from pyVmomi import vim            # Namespace for a Core Operations with VI Objects
+import openpyxl                    # For an Operations with MS Excel File(s)
 
-@dataclass # Main Class of this Module 'gethadisclu.py'
+@dataclass # Main Class of this Module 'clu_get_vsphere_ha_dsbld_items.py'
 class GetClustersHADisabledClass(): #####################################################
 	pass
 	connstate  : bool                # Is vCenter Server Connected : True/False

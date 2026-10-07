@@ -1,6 +1,6 @@
-# Project Name  : 										Report-as-a-Service  
+# Project Name  :  Virtual Infrastructure's Micro Reports  
 # ------------------------------------------------------- 
-# Module Name   :         					esxi_w_single_disk.py 
+# Module Name   :         esxi_get_items_with_sngl_dsk.py 
 # Created by    :       									 Yuri P. Bodrov 
 # Email         : 									 bodrovyp@hotmail.com 
 # Phone Number  :         									 +79259929596 
@@ -76,7 +76,7 @@ import time                       # Namespace for the Time Delaying and Sleep() 
 from pyVmomi import vim           # Namespace for a Core Operations with VI Objects
 import openpyxl                   # For an Operations with MS Excel File(s)
 
-@dataclass # Main Class of this Module 'getallhosts.py'
+@dataclass # Main Class of this Module 'esxi_get_items_with_sngl_dsk.py'
 class GetESXiWithSingleDskClass(): ###################################################@@@
 	pass
 	connstate  : bool                # Is vCenter Server Connected : True/False
@@ -109,8 +109,8 @@ class GetESXiWithSingleDskClass(): #############################################
 
 				# Set the Column Headers of Active XLSX Sheet
 				column_header_list = ["ESXi Server", "Datastore Name", "Datastore Size (GB)"]
-				active_xlsx_sheet.append(column_header_list) # type: ignore
-				xlsx_wb.save("report.xlsx")                  # type: ignore
+				active_xlsx_sheet.append(column_header_list) 				 # type: ignore
+				xlsx_wb.save("report.xlsx")                  				 # type: ignore
 			else:
 				active_xlsx_sheet = xlsx_wb["esxi_with_single_disk"] # type: ignore
 

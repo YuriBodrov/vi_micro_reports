@@ -1,6 +1,6 @@
 # Project Name  :  Virtual Infrastructure's Micro Reports  
 # ------------------------------------------------------- 
-# Module Name   :         					    esxihaagentdis.py 
+# Module Name   :         esxi_get_ha_agnt_dsbld_items.py 
 # Created by    :       									 Yuri P. Bodrov 
 # Email         : 									 bodrovyp@hotmail.com 
 # Phone Number  :         									 +79259929596 
@@ -18,7 +18,7 @@ from time import sleep             # Function for the Time Delaying
 from pyVmomi import vim            # Namespace for a Core Operations with VI Objects
 import openpyxl                    # For an Operations with MS Excel File(s)
 
-@dataclass # Main Class of this Module 'esxihaagentdis.py'
+@dataclass # Main Class of this Module 'esxi_get_ha_agnt_dsbld_items.py'
 class GetESXisHAAgentDisabledClass(): ###################################################
 	pass
 	connstate  : bool                # Is vCenter Server Connected : True/False

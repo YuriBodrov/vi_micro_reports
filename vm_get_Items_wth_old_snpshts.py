@@ -1,6 +1,6 @@
-# Project Name  : 										Report-as-a-Service  
+# Project Name  :  Virtual Infrastructure's Micro Reports  
 # ------------------------------------------------------- 
-# Module Name   :         								vmswoldsnaps.py 
+# Module Name   :         vm_get_Items_wth_old_snpshts.py 
 # Created by    :       									 Yuri P. Bodrov 
 # Email         : 									 bodrovyp@hotmail.com 
 # Phone Number  :         									 +79259929596 
@@ -23,7 +23,7 @@ from openpyxl.styles import Font									 # This Class provides All
 #from openpyxl.styles import DEFAULT_FONT					 # This Class sets the Default Font for
 																									 # all Worksheets within Workbook
 
-@dataclass # Main Class of this Module 'vmswoldsnaps.py'
+@dataclass # Main Class of this Module 'vm_get_Items_wth_old_snpshts.py'
 class GetOldVmSnpshts(): ################################################################
 	pass
 	connstate  : bool                # Is vCenter Server Connected : True/False

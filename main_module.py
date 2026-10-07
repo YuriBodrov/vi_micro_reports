@@ -1,6 +1,6 @@
-# Project Name  : 										Report-as-a-Service  
+# Project Name  :  Virtual Infrastructure's Micro Reports  
 # ------------------------------------------------------- 
-# Module Name   :         									  raascore.py 
+# Module Name   :         								 main_module.py 
 # Created by    :       									 Yuri P. Bodrov 
 # Email         : 									 bodrovyp@hotmail.com 
 # Phone Number  :         									 +79259929596 
@@ -16,17 +16,17 @@ NOTE : This Module is so-called 'Core Module'. We can run all Modules from here.
 # NOTE : Limit all lines to a Maximum of 90 characters (Best Practices!)
 #########################################################################################
 import sys
-from vcsa_connect_module    import VcConnectionSteps as VcConnSteps
-from clu_get_ha_dis_items   import GetClustersHADisabledClass as GetDisHAClu
-from esxi_ha_agent_dis      import GetESXisHAAgentDisabledClass as GetDisHAESXi
-from esxi_w_single_disk     import GetESXiWithSingleDskClass as SingleDskESXi
-from esxi_ntp_anomalies     import GetEsxiNtpSettings as GetNtpAnomEsxi
-from vm_w_old_snpshts       import GetOldVmSnpshts as GetVmOldSnapshots
-from vm_get_res_limits      import GetVmsResLimitClass as GetVmResLimit
-from vm_swap_balloon_val    import GetVmsSwapBalClass as GetVmsSwapBal
-from vm_ha_mon_action_evnts import GetVmsHaTrigAlrmClass as GetTrigAlarms
-from vm_cnsldtn_ndd_stat    import GetVmCnsldStatClass as GetCnsldtnStatus
-from vm_get_vmtools_status  import GetVmToolsStatClass as GetVmToolsStat
+from vcsa_connect_module    				import VcConnectionSteps as VcConnSteps
+from clu_get_vsphere_ha_dsbld_items import GetClustersHADisabledClass as GetDisHAClu
+from esxi_get_ha_agnt_dsbld_items 	import GetESXisHAAgentDisabledClass as GetDisHAESXi
+from esxi_get_items_with_sngl_dsk 	import GetESXiWithSingleDskClass as SingleDskESXi
+from esxi_get_ntp_anomalies     		import GetEsxiNtpSettings as GetNtpAnomEsxi
+from vm_get_Items_wth_old_snpshts 	import GetOldVmSnpshts as GetVmOldSnapshots
+from vm_get_resources_limits      	import GetVmsResLimitClass as GetVmResLimit
+from vm_get_swap_balloon_val    		import GetVmsSwapBalClass as GetVmsSwapBal
+from vm_get_ha_mntr_actn_evnts 			import GetVmsHaTrigAlrmClass as GetTrigAlarms
+from vm_get_cnsldtn_ndd_stat    		import GetVmCnsldStatClass as GetCnsldtnStatus
+from vm_get_vm_tools_status  				import GetVmToolsStatClass as GetVmToolsStat
 
 # Module for Prompting a Password with Echo Turned Off
 from getpass import getpass 

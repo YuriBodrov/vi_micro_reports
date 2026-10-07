@@ -1,6 +1,6 @@
-# Project Name  : 										Report-as-a-Service  
+# Project Name  :  Virtual Infrastructure's Micro Reports  
 # ------------------------------------------------------- 
-# Module Name   :         				 vm_swap_balloon_val.py 
+# Module Name   :         		 vm_get_swap_balloon_val.py 
 # Created by    :       									 Yuri P. Bodrov 
 # Email         : 									 bodrovyp@hotmail.com 
 # Phone Number  :         									 +79259929596 
@@ -35,7 +35,7 @@ import time                        # Namespace for the Time Delaying and Sleep()
 from pyVmomi import vim            # Namespace for a Core Operations with VI Objects
 import openpyxl                    # For an Operations with MS Excel File(s)
 
-@dataclass # Main Class of this Module 'vm_get_res_limits.py'
+@dataclass # Main Class of this Module 'vm_get_swap_balloon_val.py'
 class GetVmsSwapBalClass(): #############################################################
 	pass
 	connstate  : bool                # Is vCenter Server Connected : True/False
@@ -66,19 +66,19 @@ class GetVmsSwapBalClass(): ####################################################
 				if (not ("vm_swap_balloon_values" in xlsx_wb.sheetnames)):
 					pass
 					xlsx_wb.create_sheet(title = "vm_swap_balloon_values")
-					active_xlsx_sheet = xlsx_wb["vm_swap_balloon_values"] # type: ignore
+					active_xlsx_sheet = xlsx_wb["vm_swap_balloon_values"] 		# type: ignore
 
 					# Set the Column Headers of Active XLSX Sheet
 					column_header_list = ["VM Name", "Swap Value (MB)", "Balloon Value (MB)"]
 					active_xlsx_sheet.append(column_header_list) 							# type: ignore
 					xlsx_wb.save("report.xlsx")                  							# type: ignore
 				else:
-					active_xlsx_sheet = xlsx_wb["vm_swap_balloon_values"] # type: ignore
+					active_xlsx_sheet = xlsx_wb["vm_swap_balloon_values"] 		# type: ignore
 
 				for vm in container_view.view:
 					pass
 
-					q_stats         = vm.summary.quickStats # type: ignore
+					q_stats         = vm.summary.quickStats 									# type: ignore
 					q_stats_swap    = q_stats.swappedMemory
 					q_stats_balloon = q_stats.balloonedMemory 
 
@@ -86,8 +86,8 @@ class GetVmsSwapBalClass(): ####################################################
 						pass
 
 						xlsx_data = (vm.name, q_stats_swap, q_stats_balloon)
-						active_xlsx_sheet.append(xlsx_data) 	# type: ignore
-						xlsx_wb.save("report.xlsx")         	# type: ignore
+						active_xlsx_sheet.append(xlsx_data) 										# type: ignore
+						xlsx_wb.save("report.xlsx")         										# type: ignore
 
 				container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 				print("Done.")

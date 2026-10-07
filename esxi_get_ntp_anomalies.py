@@ -1,6 +1,6 @@
 # Project Name  :  Virtual Infrastructure's Micro Reports  
 # ------------------------------------------------------- 
-# Module Name   :         					 esxi_ntp_settings.py 
+# Module Name   :         	    esxi_get_ntp_anomalies.py 
 # Created by    :       									 Yuri P. Bodrov 
 # Email         : 									 bodrovyp@hotmail.com 
 # Phone Number  :         									 +79259929596 
@@ -12,13 +12,13 @@ NOTE : This module is designed to Detect NTP Service Configuration Deviations Wi
 			 																													the ESXi Hypervisors.
 """
 #########################################################################################
-from sys import stdout            # Function for an Output Print Options
-from dataclasses import dataclass # Function for Operations with Data Classes
-from time import sleep            # Function for the Time Delaying "sleep()" Function
-from pyVmomi import vim           # Namespace for a Core Operations with VI Objects
-import openpyxl                   # For an Operations with MS Excel File(s)
+from sys import stdout             # Function for an Output Print Options
+from dataclasses import dataclass  # Function for Operations with Data Classes
+from time import sleep             # Function for the Time Delaying "sleep()" Function
+from pyVmomi import vim            # Namespace for a Core Operations with VI Objects
+import openpyxl                    # For an Operations with MS Excel File(s)
 
-@dataclass # Main Class of this Module 'esxi_ntp_settings.py'
+@dataclass # Main Class of this Module 'esxi_get_ntp_anomalies.py'
 class GetEsxiNtpSettings(): #############################################################
 	pass
 	connstate  : bool                # Is vCenter Server Connected : True/False
@@ -52,8 +52,8 @@ class GetEsxiNtpSettings(): ####################################################
 				# Set the Column Headers of Active XLSX Sheet
 				column_header_list = ["ESXi Server", "Service Name", "Service Config", \
 													"Service State"]
-				active_xlsx_sheet.append(column_header_list) # type: ignore
-				xlsx_wb.save("report.xlsx")                  # type: ignore
+				active_xlsx_sheet.append(column_header_list) 			# type: ignore
+				xlsx_wb.save("report.xlsx")                  			# type: ignore
 			else:
 				active_xlsx_sheet = xlsx_wb["esxi_ntp_anomalies"] # type: ignore
 
@@ -68,11 +68,10 @@ class GetEsxiNtpSettings(): ####################################################
 							 a List of Strings representing the NTP IP addresses or FQDNs mapped to the
 							 ESXi Server
 				"""
-				esxi_datetime_info = host.config.dateTimeInfo
+				esxi_datetime_info = host.config.dateTimeInfo 		# type: ignore
 				if ((esxi_datetime_info) and (esxi_datetime_info.ntpConfig)):
 					ntp_servers = esxi_datetime_info.ntpConfig.server
 				else:
-					#print(f"{host.name} : No NTP Servers so far!")
 					pass
 					xlsx_data = (host.name, "ntpd", "unknown", "unknown")
 					active_xlsx_sheet.append(xlsx_data) # type: ignore
@@ -92,14 +91,15 @@ class GetEsxiNtpSettings(): ####################################################
 																				 the 'ntpd' Service is actively running now. 
 							 '[ntp_service].key'     : Service Name. 
 				"""
-				esxi_services_data = host.configManager.serviceSystem
+				esxi_services_data = host.configManager.serviceSystem # type: ignore
 				if ((esxi_services_data) and (esxi_services_data.serviceInfo)):
 					for s_name in esxi_services_data.serviceInfo.service:
 						if (s_name.key == "ntpd"): # If Service Name is 'ntpd'
 							if (not s_name.running): 
 								if (s_name.running == False):
 									s_name_run_state = "Stopped"
-								xlsx_data = (host.name, s_name.key, s_name.policy, s_name_run_state)
+								xlsx_data = (host.name, s_name.key, s_name.policy, \
+								             s_name_run_state)      # type: ignore
 								active_xlsx_sheet.append(xlsx_data) # type: ignore
 								xlsx_wb.save("report.xlsx")         # type: ignore
 				 
