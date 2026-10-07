@@ -1,5 +1,6 @@
 # Project Name : "Virtual Infrastructures. Micro Reports."<br />
-> This program is designed to Collect Certain Data from a Virtual Objects.
+> This program is designed to Collect Certain Data from a Virtual Objects
+> of VMware vSphere and KVM (in future) Environments
 <p>
   <h4>Hello, dear Colleagues!"<br />
   Current Available Functionality (applies to VMware vSphere Envs):</h4>
