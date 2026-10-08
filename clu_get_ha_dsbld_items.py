@@ -12,6 +12,7 @@ NOTE : This Module is used for the VMware vSphere Clusters with 'vSphere HA
 			 					  in Disabled State' Collection from VMware Infrastructure.
 """
 #########################################################################################
+from interaction_methods_set import InteractMethodsClass as IMClass # Apply Text Styles
 from sys import stdout             # Function for an Output Print Options
 from dataclasses import dataclass  # Namespace for Operations with Data Classes
 from time import sleep             # Function for the Time Delaying
@@ -25,10 +26,9 @@ class GetClustersHADisabledClass(): ############################################
 	connstate  : bool                # Is vCenter Server Connected : True/False
 	vc_instance: vim.ServiceInstance # Passing SmartConnect Service Instance
 
+	func_start_time = perf_counter() # Record the Start Time
 	def get_ha_disabled_clusters_func(self): ##############################################
 		pass
-
-		func_start_time = perf_counter()           # Record the Start Time
 		
 		vi_content = self.vc_instance.RetrieveContent()
 		if ((vi_content is not None) and (self.connstate)):
@@ -68,10 +68,13 @@ class GetClustersHADisabledClass(): ############################################
 					active_xlsx_sheet.append(xlsx_data) 										# type: ignore
 					xlsx_wb.save("report.xlsx")         										# type: ignore
 				 
+			imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "report.xlsx")
+			imclass_instance.add_text_style_func()
+			
 			container_view.Destroy() # to Avoid Memory Accumulation in the vCSA
 			
-			func_stop_time = perf_counter() 									# Record the Stop Time
-			func_exec_time = func_stop_time - func_start_time # Calculate the Difference 
+			func_stop_time = perf_counter() 											 # Record the Stop Time
+			func_exec_time = func_stop_time - self.func_start_time # Calculate the Difference 
 
 			print(f"Done. Execution Time is {func_exec_time:.6f}")
 			sleep(2)

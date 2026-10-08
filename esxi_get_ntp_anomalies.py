@@ -12,11 +12,13 @@ NOTE : This module is designed to Detect NTP Service Configuration Deviations Wi
 			 																													the ESXi Hypervisors.
 """
 #########################################################################################
+from interaction_methods_set import InteractMethodsClass as IMClass # Apply Text Styles
 from sys import stdout             # Function for an Output Print Options
 from dataclasses import dataclass  # Function for Operations with Data Classes
 from time import sleep             # Function for the Time Delaying "sleep()" Function
 from pyVmomi import vim            # Namespace for a Core Operations with VI Objects
 import openpyxl                    # For an Operations with MS Excel File(s)
+from time import perf_counter      # Function to Get Method's Runtime
 
 @dataclass # Main Class of this Module 'esxi_get_ntp_anomalies.py'
 class GetEsxiNtpSettings(): #############################################################
@@ -25,6 +27,7 @@ class GetEsxiNtpSettings(): ####################################################
 	vc_instance: vim.ServiceInstance # Passing SmartConnect Service Instance
 	esxi_ntp_set_miss = []
 
+	func_start_time = perf_counter() # Record the Start Time
 	def get_esxi_ntp_set_func(self): ######################################################
 		pass
 		vi_content = self.vc_instance.RetrieveContent()
@@ -74,8 +77,8 @@ class GetEsxiNtpSettings(): ####################################################
 				else:
 					pass
 					xlsx_data = (host.name, "ntpd", "unknown", "unknown")
-					active_xlsx_sheet.append(xlsx_data) # type: ignore
-					xlsx_wb.save("report.xlsx")         # type: ignore
+					active_xlsx_sheet.append(xlsx_data) 						# type: ignore
+					xlsx_wb.save("report.xlsx")         						# type: ignore
 
 				# Fetch NTP Service Status and Startup Policy
 				# Reference to 'vim.host.configManager.serviceSystem'
@@ -102,9 +105,16 @@ class GetEsxiNtpSettings(): ####################################################
 								             s_name_run_state)      # type: ignore
 								active_xlsx_sheet.append(xlsx_data) # type: ignore
 								xlsx_wb.save("report.xlsx")         # type: ignore
+
+			imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "report.xlsx")
+			imclass_instance.add_text_style_func()
 				 
 			container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
-			print("Done.")
+
+			func_stop_time = perf_counter() 											 # Record the Start Time
+			func_exec_time = func_stop_time - self.func_start_time # Calculate the Difference
+
+			print(f"Done. Execution Time is {func_exec_time:.3f} seconds")
 			sleep(2)
 			print("")
 

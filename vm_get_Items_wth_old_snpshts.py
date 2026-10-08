@@ -12,7 +12,7 @@ NOTE : This Module is used to retrieve an Old VMs Snapshots.
 This Module's Function returns "VM_NAME|SNPSHT_ID|SNPSHT_NAME|C_DATE|DAYS_GONE" List.
 """
 #########################################################################################
-from interaction_methods_set import InteractMethodsClass as IMClass
+from interaction_methods_set import InteractMethodsClass as IMClass # Apply Text Styles
 from sys import stdout						                 # Function for an Output Print Options
 from datetime import datetime, timedelta, timezone # For Datetime Operations
 from dataclasses import dataclass                  # Operations with Data Classes
@@ -114,21 +114,6 @@ class GetOldVmSnpshts(): #######################################################
 								active_xlsx_sheet.append(xlsx_data) # type: ignore
 								xlsx_wb.save("report.xlsx")         # type: ignore
 
-				"""
-				TODO : This Block of Code must be a Function/Method!
-				---------------------------------------------------------------------------------
-				# Create a New Sheet's Font Style
-				new_font_style = Font(name = "Segoe UI", size = 10, bold = False, italic = False)
-				
-				# Iterate through all Filled Cells on the Worksheet
-				for row in active_xlsx_sheet.iter_rows(min_row = 1, \
-				  max_row = active_xlsx_sheet.max_row, min_col = 1, \
-						max_col = active_xlsx_sheet.max_column):
-					for cell in row:
-						cell.font = new_font_style
-				xlsx_wb.save("report.xlsx")
-				---------------------------------------------------------------------------------
-				"""
 				imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "report.xlsx")
 				imclass_instance.add_text_style_func()
 
@@ -137,9 +122,9 @@ class GetOldVmSnpshts(): #######################################################
 				func_stop_time = perf_counter() 											 # Record the Start Time
 				func_exec_time = func_stop_time - self.func_start_time # Calculate the Difference
 
-				print(f"Done. Execution Time is {func_exec_time:.6f}")
+				print(f"Done. Execution Time is {func_exec_time:.3f} seconds")
 				print("")
-				print(f"active_xlsx_sheet type is : {type(active_xlsx_sheet)}")
+				
 				sleep(2)
 
 		except Exception as xex:

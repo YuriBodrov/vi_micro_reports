@@ -17,7 +17,7 @@ NOTE : This Module is so-called 'Core Module'. We can run all Modules from here.
 #########################################################################################
 import sys
 from vcsa_connect_module    				import VcConnectionSteps as VcConnSteps
-from clu_get_vsphere_ha_dsbld_items import GetClustersHADisabledClass as GetDisHAClu
+from clu_get_ha_dsbld_items 				import GetClustersHADisabledClass as GetDisHAClu
 from esxi_get_ha_agnt_dsbld_items 	import GetESXisHAAgentDisabledClass as GetDisHAESXi
 from esxi_get_items_with_sngl_dsk 	import GetESXiWithSingleDskClass as SingleDskESXi
 from esxi_get_ntp_anomalies     		import GetEsxiNtpSettings as GetNtpAnomEsxi
@@ -50,23 +50,27 @@ def main(): ####################################################################
 	vm_old_snapshots = GetVmOldSnapshots(conn_state, vc_service)
 	vm_old_snapshots.get_old_vm_snpshts()
 	
-	"""
+	
 	# 02 : Get the ESXi Server's NTP Settings Anomalies +
 	get_esxi_ntp_set = GetNtpAnomEsxi(conn_state, vc_service)
 	get_esxi_ntp_set.get_esxi_ntp_set_func()
+	
 	
 	# 03 : Get the List of ESXi Servers with a Single Datastore +
 	get_single_dsk_esxi = SingleDskESXi(conn_state, vc_service)
 	get_single_dsk_esxi.get_esxi_w_sngl_dsk_func()
 
+	
 	# 04 : Get HA Disabled Clusters List +
 	get_dis_ha_cl_instance = GetDisHAClu(conn_state, vc_service)
 	get_dis_ha_cl_instance.get_ha_disabled_clusters_func()
 
+	
 	# 05 : Get the List of ESXi Servers with a Disabled HA Agent +
 	get_dis_ha_esxi_instance = GetDisHAESXi(conn_state, vc_service)
 	get_dis_ha_esxi_instance.get_esxi_ha_agent_dis_func()
 
+	"""
 	# 06 : Get VM Resource Limits (CPU/RAM) +
 	get_vm_res_limit_instance = GetVmResLimit(conn_state, vc_service)
 	get_vm_res_limit_instance.get_vms_res_limit_func()

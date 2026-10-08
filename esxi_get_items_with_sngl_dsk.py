@@ -12,77 +12,23 @@ NOTE : This Module is designed for the Single-Disk ESXi Hypervisors Collection f
 			 																											 VMware Infrastructure.
 """
 
-"""
-from pyVim.connect import Disconnect, SmartConnectNoSSL
-from pyVmomi import vim
-
-
-def get_datastores_per_host(content):
-  # Create a container view for all HostSystem objects
-  container = content.viewManager.CreateContainerView(
-      content.rootFolder, [vim.HostSystem], True
-  )
-
-  host_datastores = {}
-
-  # Iterate through each ESXi host in the view
-  for host in container.view:
-    host_name = host.name
-    # Each host object has a 'datastore' attribute listing attached datastores
-    datastores = [ds.name for ds in host.datastore]
-    host_datastores[host_name] = datastores
-
-    print(f'ESXi Host: {host_name}')
-    for ds in host.datastore:
-      print(f'  - Datastore: {ds.name} (Capacity: {ds.summary.capacity / (1024**3):.2f} GB)')
-
-  container.Destroy()
-  return host_datastores
-
-
-def main():
-  # Connect to vCenter or standalone ESXi host
-  si = SmartConnectNoSSL(
-      host='vcenter.yourdomain.local',
-      user='administrator@vsphere.local',
-      pwd='your_password',
-      port=443,
-  )
-
-  try:
-    content = si.RetrieveContent()
-    get_datastores_per_host(content)
-  finally:
-    Disconnect(si)
-
-
-if __name__ == '__main__':
-  main()
-```
-
-### Key Concepts
-* **`vim.HostSystem`**: Represents an ESXi host in the vSphere inventory.
-* **`host.datastore`**: Returns a list of `vim.Datastore` managed object 
-references directly mounted or accessible by that specific ESXi host.
-* **`host.summary.capacity`**: Provides total storage size properties for 
-individual datastore objects if you need disk utilization stats.
-
-"""
 #########################################################################################
-#from pyVim.connect import SmartConnect, Disconnect
+from interaction_methods_set import InteractMethodsClass as IMClass # Apply Text Styles
 from sys import stdout            # Function for an Output Print Options
 from dataclasses import dataclass # Function for Operations with Data Classes
 import time                       # Namespace for the Time Delaying and Sleep() Function
 from pyVmomi import vim           # Namespace for a Core Operations with VI Objects
 import openpyxl                   # For an Operations with MS Excel File(s)
+from time import perf_counter     # Function to Get Method's Runtime
 
 @dataclass # Main Class of this Module 'esxi_get_items_with_sngl_dsk.py'
-class GetESXiWithSingleDskClass(): ###################################################@@@
+class GetESXiWithSingleDskClass(): ######################################################
 	pass
 	connstate  : bool                # Is vCenter Server Connected : True/False
 	vc_instance: vim.ServiceInstance # Passing SmartConnect Service Instance
 	#esxi_w_sngl_dks_list = []
 
+	func_start_time = perf_counter() # Record the Start Time
 	def get_esxi_w_sngl_dsk_func(self): ###################################################
 		pass
 		vi_content = self.vc_instance.RetrieveContent()
@@ -114,25 +60,27 @@ class GetESXiWithSingleDskClass(): #############################################
 			else:
 				active_xlsx_sheet = xlsx_wb["esxi_with_single_disk"] # type: ignore
 
-			#print(f"[INFO] : Collecting Single-Disk ESXi Servers...")
-			#print("-" * 47)
 			stdout.write(f"[INFO] : Collecting Single-Disk ESXi Servers...")
 			stdout.flush()
 			for host in container_view.view:
 				# NOTE! len(host.datastore) : Count ESXi Server's Datastores
-				for ds in host.datastore: # type: ignore
-					#print(f"  - Datastore: {ds.name} (Capacity: {ds.summary.capacity / \
-					#(1024**3):.2f} GB) | Total : {len(host.datastore)}") # type: ignore
-					if (len(host.datastore) <= 1): # type: ignore
+				for ds in host.datastore: 													 # type: ignore
+					if (len(host.datastore) <= 1): 										 # type: ignore
 						pass
-						#self.esxi_w_sngl_dks_list.append(host.name)
 						capacity = round(ds.summary.capacity / (1024**3), 1)
 						xlsx_data = (host.name, ds.name, capacity)
-						active_xlsx_sheet.append(xlsx_data) # type: ignore
-						xlsx_wb.save("report.xlsx")         # type: ignore
+						active_xlsx_sheet.append(xlsx_data) 						 # type: ignore
+						xlsx_wb.save("report.xlsx")         						 # type: ignore
 
+			imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "report.xlsx")
+			imclass_instance.add_text_style_func()
+			
 			container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
-			print("Done.")
+
+			func_stop_time = perf_counter() 											 # Record the Start Time
+			func_exec_time = func_stop_time - self.func_start_time # Calculate the Difference
+
+			print(f"Done. Execution Time is {func_exec_time:.3f} seconds")
 			time.sleep(2)
 			print("")
 

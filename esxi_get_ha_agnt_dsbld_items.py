@@ -23,7 +23,6 @@ class GetESXisHAAgentDisabledClass(): ##########################################
 	pass
 	connstate  : bool                # Is vCenter Server Connected : True/False
 	vc_instance: vim.ServiceInstance # Passing SmartConnect Service Instance
-	#esxi_ha_agnt_dsbld_list = []
 
 	def get_esxi_ha_agent_dis_func(self): #################################################
 		pass
@@ -66,25 +65,6 @@ class GetESXisHAAgentDisabledClass(): ##########################################
 					xlsx_data = (host.name, "Disabled")
 					active_xlsx_sheet.append(xlsx_data) 								# type: ignore
 					xlsx_wb.save("report.xlsx")         								# type: ignore
-
-				
-				"""
-				ha_statuses = {}
-				if (cluster.runtime and cluster.runtime.dasFdmHostState):
-					for fdm_state in cluster.runtime.dasFdmHostState:
-						ha_statuses[fdm_state.host._moId] = fdm_state.state
-
-				
-				for host in cluster.name.host:
-					ha_state = ha_statuses.get(host._moId, "HA Disabled / Unknown")
-					print(f"ESXi : {host.name:<25} | HA Agent State : {ha_state}")
-				# Check If HA Enabled in the Particular Cluster
-				#ha_enabled_bool = cluster.configuration.dasConfig.enabled
-				# If Disabled, then Add into the List
-				#if (not ha_enabled_bool):
-				#	self.clusters_ha_disabled_list.append(cluster.name)
-				# Map 'dasFdmHostState' Elements 
-				"""
 			
 			container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 			print("Done.")
