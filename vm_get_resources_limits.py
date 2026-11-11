@@ -33,9 +33,11 @@ Collection from VMware Infrastructure. This Module's Function returns
 VM Names List and Its Resource Limits.
 """
 #########################################################################################
+from interaction_methods_set import InteractMethodsClass as IMClass # Apply Text Styles
 from sys import stdout						# Function for an Output Print Options
 from dataclasses import dataclass # Namespace for Operations with Data Classes
 import time                       # Namespace for the Time Delaying and Sleep() Function
+from time import perf_counter     # Function to Get Method's Runtime
 from pyVmomi import vim           # Namespace for a Core Operations with VI Objects
 import openpyxl                   # For an Operations with MS Excel File(s)
 
@@ -44,10 +46,12 @@ class GetVmsResLimitClass(): ###################################################
 	pass
 	connstate  : bool                # Is vCenter Server Connected : True/False
 	vc_instance: vim.ServiceInstance # Passing SmartConnect Service Instance
-	#vm_collection_list = []
 
 	def get_vms_res_limit_func(self): #####################################################
 		pass
+
+		func_start_time = 0.0
+		func_start_time = perf_counter() # Record the Start Time
 
 		try:
 			stdout.write("[INFO] : Collecting VM Resources Limits...")
@@ -68,7 +72,7 @@ class GetVmsResLimitClass(): ###################################################
 																																view_type, recursive)
 				
 				# Open and Initialize the Existing(!) MS Excel File
-				xlsx_wb = openpyxl.load_workbook("report.xlsx")
+				xlsx_wb = openpyxl.load_workbook("vi_micro_report.xlsx")
 
 				# Create a Thematic Sheet and Set it as Active
 				if (not ("vm_resources_limits" in xlsx_wb.sheetnames)):
@@ -82,25 +86,12 @@ class GetVmsResLimitClass(): ###################################################
 														"RAM Reservation (MB)", "RAM Shares Level", \
 															"RAM Shares Value", "RAM Locked to Max?"]
 					active_xlsx_sheet.append(column_header_list) 							 # type: ignore
-					xlsx_wb.save("report.xlsx")                  							 # type: ignore
+					xlsx_wb.save("vi_micro_report.xlsx")                  		 # type: ignore
 				else:
 					active_xlsx_sheet = xlsx_wb["vm_resources_limits"] 				 # type: ignore
 
 				for vm in container_view.view:
 					pass
-					"""
-					# Set Initial Values for these Variables
-					vm_cpu_limit      = "Not set"
-					vm_cpu_rsrvtn     = "Not set"
-					vm_cpu_shares_lvl = "Not set"
-					vm_cpu_shares_val = "Not set"
-					#vm_ram_are_locked = "Not set"
-					vm_ram_limit      = "Not set"
-					vm_ram_rsrvtn     = "Not set"
-					vm_ram_shares_lvl = "Not set"
-					vm_ram_shares_val = "Not set"
-					"""
-					
 					# Get VM's CPU Allocation Summary
 					# Get VM's Memory Allocation Summary
 					# Get VM's "All Guest Memory is Locked" Status
@@ -115,7 +106,7 @@ class GetVmsResLimitClass(): ###################################################
 						vm_cpu_limit      = vm_cpu_alloc.limit   
 						vm_cpu_rsrvtn     = vm_cpu_alloc.reservation  
 						vm_cpu_shares_lvl = vm_cpu_alloc.shares.level  
-						vm_cpu_shares_val = vm_cpu_alloc.shares.share
+						vm_cpu_shares_val = vm_cpu_alloc.shares.shares
 
 						# Memory Limits and Shares Data:
 						vm_ram_limit      = vm_ram_alloc.limit 
@@ -127,31 +118,19 @@ class GetVmsResLimitClass(): ###################################################
 									 vm_cpu_shares_val, vm_ram_limit, vm_ram_rsrvtn, vm_ram_shares_lvl, \
 										vm_ram_shares_val, vm_ram_are_locked)
 						active_xlsx_sheet.append(xlsx_data) 										 # type: ignore
-						xlsx_wb.save("report.xlsx")         										 # type: ignore
+						xlsx_wb.save("vi_micro_report.xlsx") 										 # type: ignore
 
-						"""
-						print(f"vm_name : {vm.name}")
-						print(f"---")
-						print(f"cpu_limit_value   : {vm_cpu_limit}")
-						print(f"cpu_rsrvtn_value  : {vm_cpu_rsrvtn}")
-						print(f"cpu_shares_lvl    : {vm_cpu_shares_lvl}")
-						print(f"cpu_shares_value  : {vm_cpu_shares_val}")
-						print(f"---")
-						print(f"vm_ram_are_locked : {vm_ram_are_locked}")
-						print(f"ram_limit_value   : {vm_ram_limit}")
-						print(f"ram_rsrvtn_value  : {vm_ram_rsrvtn}")
-						print(f"ram_shares_lvl    : {vm_ram_shares_lvl}")
-						print(f"ram_shares_val    : {vm_ram_shares_val}")
-						print("")
-						"""
+				imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "vi_micro_report.xlsx")
+				imclass_instance.add_text_style_func()
 
 				container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
-				print("Done.")
-				time.sleep(2)
-				print("")
 
-				#return self.vm_collection_list
+			func_stop_time = perf_counter() 									# Record the Stop Time
+			func_exec_time = func_stop_time - func_start_time # Calculate the Difference
+
+			print(f"Done. Execution Time is {func_exec_time:.3f} seconds")
+			time.sleep(2)
+			print("")
 
 		except Exception as xex:
-			#print(f"Exception Occurred : {xex}".upper())
 			print(f"Exception Occurred : {xex}")

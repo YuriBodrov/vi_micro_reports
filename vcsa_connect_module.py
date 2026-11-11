@@ -53,15 +53,15 @@ class VcConnectionSteps(): #####################################################
 			vc_conn      = SmartConnect(host=self.vcaddr, user=self.vclogin, \
 															 		pwd=self.vcpassw, sslContext=ssl_context)
 			vc_conn_time = vc_conn.CurrentTime()
-			print(f"vCenter Server  : {self.vcaddr}".upper())
-			print(f"Username        : {self.vclogin}".upper())
-			print(f"Connection Time : {vc_conn_time}".upper())
+			print(f"vCenter Server  : {self.vcaddr}")
+			print(f"Username        : {self.vclogin}")
+			print(f"Connection Time : {vc_conn_time}")
 			is_vc_alive  = True 
 			time.sleep(2) # Program Scenario Sleeps for 2 Seconds
 
 		# This Block Starts when Connection with vCenter Server is NOT OK
 		except Exception as xex:
-			print(f"Connection Error Occurred : {xex}".upper())
+			print(f"Connection Error Occurred : {xex}")
 			is_vc_alive = False
 			time.sleep(2)       # Program Scenario Sleeps for 2 Seconds
 			Disconnect(vc_conn) # type: ignore | Disconnects from vCenter Server Instance

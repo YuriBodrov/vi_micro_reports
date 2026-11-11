@@ -29,9 +29,11 @@ NOTE
 NOTE : This Module is used to collect these Metrics : VM's Swap and Ballooning Values. 
 """
 #########################################################################################
+from interaction_methods_set import InteractMethodsClass as IMClass # Apply Text Styles
 from sys import stdout						 # Function for an Output Print Options
 from dataclasses import dataclass  # Namespace for Operations with Data Classes
 import time                        # Namespace for the Time Delaying and Sleep() Function
+from time import perf_counter      # Function to Get Method's Runtime
 from pyVmomi import vim            # Namespace for a Core Operations with VI Objects
 import openpyxl                    # For an Operations with MS Excel File(s)
 
@@ -44,6 +46,9 @@ class GetVmsSwapBalClass(): ####################################################
 	def get_vm_swap_bal_func(self): #######################################################
 		pass
 
+		func_start_time = 0.0
+		func_start_time = perf_counter() # Record the Start Time		
+		
 		try:
 			stdout.write("[INFO] : Collecting VM's Swap and Ballooning Values...")
 			stdout.flush()
@@ -60,7 +65,7 @@ class GetVmsSwapBalClass(): ####################################################
 																																view_type, recursive)
 				
 				# Open and Initialize the Existing(!) MS Excel File
-				xlsx_wb = openpyxl.load_workbook("report.xlsx")
+				xlsx_wb = openpyxl.load_workbook("vi_micro_report.xlsx")
 
 				# Create a Thematic Sheet and Set it as Active
 				if (not ("vm_swap_balloon_values" in xlsx_wb.sheetnames)):
@@ -71,7 +76,7 @@ class GetVmsSwapBalClass(): ####################################################
 					# Set the Column Headers of Active XLSX Sheet
 					column_header_list = ["VM Name", "Swap Value (MB)", "Balloon Value (MB)"]
 					active_xlsx_sheet.append(column_header_list) 							# type: ignore
-					xlsx_wb.save("report.xlsx")                  							# type: ignore
+					xlsx_wb.save("vi_micro_report.xlsx")                  		# type: ignore
 				else:
 					active_xlsx_sheet = xlsx_wb["vm_swap_balloon_values"] 		# type: ignore
 
@@ -87,10 +92,17 @@ class GetVmsSwapBalClass(): ####################################################
 
 						xlsx_data = (vm.name, q_stats_swap, q_stats_balloon)
 						active_xlsx_sheet.append(xlsx_data) 										# type: ignore
-						xlsx_wb.save("report.xlsx")         										# type: ignore
+						xlsx_wb.save("vi_micro_report.xlsx")         						# type: ignore
+
+				imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "vi_micro_report.xlsx")
+				imclass_instance.add_text_style_func()
 
 				container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
-				print("Done.")
+
+				func_stop_time = perf_counter() 									# Record the Stop Time
+				func_exec_time = func_stop_time - func_start_time # Calculate the Difference
+				
+				print(f"Done. Execution Time is {func_exec_time:.3f} seconds")
 				time.sleep(2)
 				print("")
 

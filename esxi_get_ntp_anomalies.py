@@ -27,9 +27,12 @@ class GetEsxiNtpSettings(): ####################################################
 	vc_instance: vim.ServiceInstance # Passing SmartConnect Service Instance
 	esxi_ntp_set_miss = []
 
-	func_start_time = perf_counter() # Record the Start Time
 	def get_esxi_ntp_set_func(self): ######################################################
 		pass
+
+		func_start_time = 0.0
+		func_start_time = perf_counter() 		# Record the Start Time
+		
 		vi_content = self.vc_instance.RetrieveContent()
 		if ((vi_content is not None) and (self.connstate)):
 			container = vi_content.rootFolder # Root/Parent Directory Starting Point
@@ -45,7 +48,7 @@ class GetEsxiNtpSettings(): ####################################################
 												view_type, recursive)
 		
 			# Open and Initialize the Existing(!) MS Excel File
-			xlsx_wb = openpyxl.load_workbook("report.xlsx")
+			xlsx_wb = openpyxl.load_workbook("vi_micro_report.xlsx")
 
 			# Create a Thematic Sheet and Set it as Active
 			if (not ("esxi_ntp_anomalies" in xlsx_wb.sheetnames)):
@@ -56,11 +59,11 @@ class GetEsxiNtpSettings(): ####################################################
 				column_header_list = ["ESXi Server", "Service Name", "Service Config", \
 													"Service State"]
 				active_xlsx_sheet.append(column_header_list) 			# type: ignore
-				xlsx_wb.save("report.xlsx")                  			# type: ignore
+				xlsx_wb.save("vi_micro_report.xlsx")         			# type: ignore
 			else:
 				active_xlsx_sheet = xlsx_wb["esxi_ntp_anomalies"] # type: ignore
 
-			stdout.write(f"[INFO] : Collecting ESXi Server's NTP Settings...")
+			stdout.write(f"[INFO] : Collecting ESXi Servers NTP Anomalies...")
 			stdout.flush()
 			
 			for host in container_view.view:
@@ -78,7 +81,7 @@ class GetEsxiNtpSettings(): ####################################################
 					pass
 					xlsx_data = (host.name, "ntpd", "unknown", "unknown")
 					active_xlsx_sheet.append(xlsx_data) 						# type: ignore
-					xlsx_wb.save("report.xlsx")         						# type: ignore
+					xlsx_wb.save("vi_micro_report.xlsx") 						# type: ignore
 
 				# Fetch NTP Service Status and Startup Policy
 				# Reference to 'vim.host.configManager.serviceSystem'
@@ -97,24 +100,24 @@ class GetEsxiNtpSettings(): ####################################################
 				esxi_services_data = host.configManager.serviceSystem # type: ignore
 				if ((esxi_services_data) and (esxi_services_data.serviceInfo)):
 					for s_name in esxi_services_data.serviceInfo.service:
-						if (s_name.key == "ntpd"): # If Service Name is 'ntpd'
+						if (s_name.key == "ntpd"): 												# If Service Name is 'ntpd'
 							if (not s_name.running): 
 								if (s_name.running == False):
 									s_name_run_state = "Stopped"
 								xlsx_data = (host.name, s_name.key, s_name.policy, \
-								             s_name_run_state)      # type: ignore
-								active_xlsx_sheet.append(xlsx_data) # type: ignore
-								xlsx_wb.save("report.xlsx")         # type: ignore
+								             s_name_run_state)       					# type: ignore
+								active_xlsx_sheet.append(xlsx_data)  					# type: ignore
+								xlsx_wb.save("vi_micro_report.xlsx") 					# type: ignore
 
-			imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "report.xlsx")
+			imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "vi_micro_report.xlsx")
 			imclass_instance.add_text_style_func()
 				 
 			container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 
-			func_stop_time = perf_counter() 											 # Record the Start Time
-			func_exec_time = func_stop_time - self.func_start_time # Calculate the Difference
+		func_stop_time = perf_counter() 											 		# Record the Stop Time
+		func_exec_time = func_stop_time - func_start_time 		 		# Calculate the Difference
 
-			print(f"Done. Execution Time is {func_exec_time:.3f} seconds")
-			sleep(2)
-			print("")
+		print(f"Done. Execution Time is {func_exec_time:.3f} seconds")
+		sleep(2)
+		print("")
 

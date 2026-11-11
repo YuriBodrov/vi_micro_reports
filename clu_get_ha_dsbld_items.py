@@ -9,7 +9,7 @@
 
 """
 NOTE : This Module is used for the VMware vSphere Clusters with 'vSphere HA
-			 					  in Disabled State' Collection from VMware Infrastructure.
+			 					  in Disabled State' Collection from VMware Infrastructure.l
 """
 #########################################################################################
 from interaction_methods_set import InteractMethodsClass as IMClass # Apply Text Styles
@@ -26,9 +26,11 @@ class GetClustersHADisabledClass(): ############################################
 	connstate  : bool                # Is vCenter Server Connected : True/False
 	vc_instance: vim.ServiceInstance # Passing SmartConnect Service Instance
 
-	func_start_time = perf_counter() # Record the Start Time
 	def get_ha_disabled_clusters_func(self): ##############################################
 		pass
+
+		func_start_time = 0.0
+		func_start_time = perf_counter() # Record the Start Time
 		
 		vi_content = self.vc_instance.RetrieveContent()
 		if ((vi_content is not None) and (self.connstate)):
@@ -41,7 +43,7 @@ class GetClustersHADisabledClass(): ############################################
 																															 recursive)
 
 			# Open and Initialize the Existing(!) MS Excel File
-			xlsx_wb = openpyxl.load_workbook("report.xlsx")
+			xlsx_wb = openpyxl.load_workbook("vi_micro_report.xlsx")
 
 			# Create a Thematic Sheet and Set it as Active
 			if (not ("clu_vsphere_ha_disabled" in xlsx_wb.sheetnames)):
@@ -52,7 +54,7 @@ class GetClustersHADisabledClass(): ############################################
 				# Set the Column Headers of Active XLSX Sheet
 				column_header_list = ["Cluster Name", "vSphere HA Status"]
 				active_xlsx_sheet.append(column_header_list) 							# type: ignore
-				xlsx_wb.save("report.xlsx")                  							# type: ignore
+				xlsx_wb.save("vi_micro_report.xlsx")                  		# type: ignore
 			else:
 				pass
 				active_xlsx_sheet = xlsx_wb["clu_vsphere_ha_disabled"] 		# type: ignore
@@ -66,16 +68,16 @@ class GetClustersHADisabledClass(): ############################################
 				if (not ha_enabled_bool):
 					xlsx_data = (cluster.name, "Disabled")
 					active_xlsx_sheet.append(xlsx_data) 										# type: ignore
-					xlsx_wb.save("report.xlsx")         										# type: ignore
+					xlsx_wb.save("vi_micro_report.xlsx") 										# type: ignore
 				 
-			imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "report.xlsx")
+			imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "vi_micro_report.xlsx")
 			imclass_instance.add_text_style_func()
 			
 			container_view.Destroy() # to Avoid Memory Accumulation in the vCSA
 			
-			func_stop_time = perf_counter() 											 # Record the Stop Time
-			func_exec_time = func_stop_time - self.func_start_time # Calculate the Difference 
+		func_stop_time = perf_counter() 											 # Record the Stop Time
+		func_exec_time = func_stop_time - func_start_time 		 # Calculate the Difference 
 
-			print(f"Done. Execution Time is {func_exec_time:.6f}")
-			sleep(2)
-			print("")
+		print(f"Done. Execution Time is {func_exec_time:.3f} seconds")
+		sleep(2)
+		print("")

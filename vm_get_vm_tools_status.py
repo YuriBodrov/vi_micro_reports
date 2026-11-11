@@ -26,9 +26,11 @@ toolsNotInstalled : VMware Tools have Never been Installed or have Never been Ru
 NOTE : This Module is used to collect VMware Tools Status from all VMs 
 """
 #########################################################################################
+from interaction_methods_set import InteractMethodsClass as IMClass # Apply Text Styles
 from sys import stdout						 # Function for an Output Print Options
 from dataclasses import dataclass  # Namespace for Operations with Data Classes
 import time                        # Namespace for the Time Delaying and Sleep() Function
+from time import perf_counter			 # Function to Get Method's Runtime
 from pyVmomi import vim            # Namespace for a Core Operations with VI Objects
 import openpyxl                    # For an Operations with MS Excel File(s)
 
@@ -38,9 +40,13 @@ class GetVmToolsStatClass(): ###################################################
 	connstate  : bool                # Is vCenter Server Connected : True/False
 	vc_instance: vim.ServiceInstance # Passing SmartConnect Service Instance
 
+	
 	def get_vm_tools_stat_func(self): #####################################################
 		pass
 
+		func_start_time = 0.0
+		func_start_time = perf_counter() # Record the Start Time
+		
 		try:
 			stdout.write("[INFO] : Collecting VMware Tools Status...")
 			stdout.flush()
@@ -56,7 +62,7 @@ class GetVmToolsStatClass(): ###################################################
 																																view_type, recursive)
 				
 				# Open and Initialize the Existing(!) MS Excel File
-				xlsx_wb = openpyxl.load_workbook("report.xlsx")
+				xlsx_wb = openpyxl.load_workbook("vi_micro_report.xlsx")
 
 				# Create a Thematic Sheet and Set it as Active
 				if (not ("vm_vmware_tools_status" in xlsx_wb.sheetnames)):
@@ -68,7 +74,7 @@ class GetVmToolsStatClass(): ###################################################
 					column_header_list = ["VM Name", "VMware Tools Service Status", \
 													 "VMware Tools Software Status", "VMware Tools Version"]
 					active_xlsx_sheet.append(column_header_list) 						
-					xlsx_wb.save("report.xlsx")                  					 	
+					xlsx_wb.save("vi_micro_report.xlsx")                  					 	
 				else:
 					active_xlsx_sheet = xlsx_wb["vm_vmware_tools_status"] 
 
@@ -86,10 +92,17 @@ class GetVmToolsStatClass(): ###################################################
 						xlsx_data = (vm.name, vm_tools_run_status, vm_tools_sw_status, \
 									 vm_tools_version)
 						active_xlsx_sheet.append(xlsx_data) 							# type: ignore
-						xlsx_wb.save("report.xlsx")         
+						xlsx_wb.save("vi_micro_report.xlsx")         
 
+				imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "vi_micro_report.xlsx")
+				imclass_instance.add_text_style_func()
+				
 				container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
-				print("Done.")
+
+				func_stop_time = perf_counter() 									# Record the Stop Time
+				func_exec_time = func_stop_time - func_start_time # Calculate the Difference
+				
+				print(f"Done. Execution Time is {func_exec_time:.3f} seconds")
 				time.sleep(2)
 				print("")
 

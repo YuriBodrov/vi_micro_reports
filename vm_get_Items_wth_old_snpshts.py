@@ -9,7 +9,7 @@
 
 """
 NOTE : This Module is used to retrieve an Old VMs Snapshots.
-This Module's Function returns "VM_NAME|SNPSHT_ID|SNPSHT_NAME|C_DATE|DAYS_GONE" List.
+			 By default, Older than 30 Days.
 """
 #########################################################################################
 from interaction_methods_set import InteractMethodsClass as IMClass # Apply Text Styles
@@ -36,10 +36,19 @@ class GetOldVmSnpshts(): #######################################################
 																							Older than a Specified Number of Days
 	"""
 
-	func_start_time = perf_counter() # Record the Start Time
+	#func_start_time = 0.0
+	#func_start_time = perf_counter() # Record the Start Time
+	"""
+	#func_start_time = datetime.now().strftime("%H:%M:%S.%f")[:-3] # Record the Start Time
+	#func_start_time = datetime.now().strftime("%H:%M:%S.%f")[:-3] # Record the Start Time
+	# Record the Start Time
+	start_date_string = str(datetime.now())
+	func_start_time = datetime.strptime(start_date_string, "%H:%M:%S.%f").time()
+	"""
 	
-	def get_snpsht_data(self, snpsht_lst, days_gone): # type: ignore ######################
+	def get_snpsht_data(self, snpsht_lst, days_gone): # type: ignore #######################
 		pass
+		
 		old_snpshts_lst = [] # Define this Variable as VM's Snapshots List
 		date_as_limit   = datetime.now(timezone.utc) - timedelta(days = days_gone)
 
@@ -67,6 +76,9 @@ class GetOldVmSnpshts(): #######################################################
 	"""
 	def get_old_vm_snpshts(self): #########################################################
 		pass
+
+		func_start_time = 0.0
+		func_start_time = perf_counter() # Record the Start Time
 
 		try:
 			stdout.write(f"[INFO] : Collecting an Old VM Snapshots...")
@@ -96,13 +108,33 @@ class GetOldVmSnpshts(): #######################################################
 				column_header_list = ["VM Name", "Snapshot ID", "Snapshot Name", \
 													"Creation Date", "Age in Days"]
 				active_xlsx_sheet.append(column_header_list) 					 # type: ignore
-				xlsx_wb.save("report.xlsx")                  					 # type: ignore
+				xlsx_wb.save("vi_micro_report.xlsx")         					 # type: ignore
 
 				for vm in container_view.view:
 					pass
 					# Check If there are any Snapshots of a Particular VM
 					if (vm.snapshot) and (vm.snapshot.rootSnapshotList): # type: ignore
 						pass
+
+						"""
+						# TODO : Add some Test Logic:
+						total_snapshot_size = 0
+						if (vm.layoutEx and vm.layoutEx.file):						 # type: ignore
+							pass
+							for file_info in vm.layoutEx.file:							 # type: ignore
+								pass
+								is_snapshot_file = (
+									file_info.type == "snapshotData" or "delta" in file_info.name.lower() \
+									or any(f"00000{i}" in file_info.name for i in range(1, 10))
+								)
+								if is_snapshot_file:
+									pass
+									total_snapshot_size += file_info.size
+									print(f"vm_name             : {vm.name}")
+									print(f"total_snapshot_size : {total_snapshot_size}")
+									print("---")
+						"""
+						
 						vm_old_snpshts_list = self.get_snpsht_data\
 							(vm.snapshot.rootSnapshotList, days_limit)			 # type: ignore
 
@@ -111,21 +143,21 @@ class GetOldVmSnpshts(): #######################################################
 								age_in_days = (datetime.now(timezone.utc) - snpsht['created']).days
 								xlsx_data = (vm.name, snpsht["id"], snpsht["name"], \
 										 snpsht["created"].strftime("%Y-%m-%d"), age_in_days)
-								active_xlsx_sheet.append(xlsx_data) # type: ignore
-								xlsx_wb.save("report.xlsx")         # type: ignore
+								active_xlsx_sheet.append(xlsx_data)  					 # type: ignore
+								xlsx_wb.save("vi_micro_report.xlsx") 					 # type: ignore
 
-				imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "report.xlsx")
+				imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "vi_micro_report.xlsx")
 				imclass_instance.add_text_style_func()
 
 				container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
-				
-				func_stop_time = perf_counter() 											 # Record the Start Time
-				func_exec_time = func_stop_time - self.func_start_time # Calculate the Difference
+								
+			func_stop_time = perf_counter() 											 # Record the Stop Time
+			func_exec_time = func_stop_time - func_start_time # Calculate the Difference   
 
-				print(f"Done. Execution Time is {func_exec_time:.3f} seconds")
-				print("")
+			print(f"Done. Execution Time is {func_exec_time:.3f} seconds")
+			print("")
 				
-				sleep(2)
+			sleep(2)
 
 		except Exception as xex:
 			print(f"Exception Occured : {xex}".upper())

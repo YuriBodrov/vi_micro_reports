@@ -13,8 +13,10 @@ NOTE : This Module is used to Collect VMs with a Triggered Alarms about
 """
 
 #########################################################################################
+from interaction_methods_set import InteractMethodsClass as IMClass # Apply Text Styles
 from dataclasses import dataclass  # Namespace for Operations with Data Classes
-from time import sleep             # Getting a Sleep() Function for an Output Delay 
+from time import sleep             # Getting a Sleep() Function for an Output Delay
+from time import perf_counter      # Function to Get Method's Runtime
 from pyVmomi import vim            # Namespace for a Core Operations with VI Objects
 from sys import stdout						 # Function for an Output Print Options
 import openpyxl                    # For an Operations with MS Excel File(s)
@@ -27,6 +29,10 @@ class GetVmsHaTrigAlrmClass(): #################################################
 	
 	def get_vm_trig_alrm_func(self): ######################################################
 		pass
+		
+		func_start_time = 0.0
+		func_start_time = perf_counter() # Record the Start Time
+		
 		vi_content = self.vc_instance.RetrieveContent()
 		if ((vi_content is not None) and (self.connstate)):
 			
@@ -34,7 +40,7 @@ class GetVmsHaTrigAlrmClass(): #################################################
 			trig_alrms = container.triggeredAlarmState # Searching for Triggered Alarms 
 		
 			# Open and Initialize the Existing(!) MS Excel File
-			xlsx_wb = openpyxl.load_workbook("report.xlsx")
+			xlsx_wb = openpyxl.load_workbook("vi_micro_report.xlsx")
 
 			# Create a Thematic Sheet and Set it as Active
 			if (not ("vm_ha_monitor_errors" in xlsx_wb.sheetnames)):
@@ -45,7 +51,7 @@ class GetVmsHaTrigAlrmClass(): #################################################
 				# Set the Column Headers of Active XLSX Sheet
 				column_header_list = ["VM Name", "Event Data", "Status/Color", "Event's Datetime"]
 				active_xlsx_sheet.append(column_header_list)				# type: ignore
-				xlsx_wb.save("report.xlsx")                  				# type: ignore
+				xlsx_wb.save("vi_micro_report.xlsx")         				# type: ignore
 
 			else:
 				active_xlsx_sheet = xlsx_wb["vm_ha_monitor_errors"] # type: ignore
@@ -65,10 +71,17 @@ class GetVmsHaTrigAlrmClass(): #################################################
 					xlsx_data = (vm_entity_name, alarm_info.name, alrm_state.overallStatus, \
 									alrm_state.time.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
 					active_xlsx_sheet.append(xlsx_data)
-					xlsx_wb.save("report.xlsx")
+					xlsx_wb.save("vi_micro_report.xlsx")
+
+			imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "vi_micro_report.xlsx")
+			imclass_instance.add_text_style_func()
 
 			container.Destroy() # to Avoid Memory Accumulation in the vCenter Server
-			print("Done.")
+
+			func_stop_time = perf_counter() 								  # Record the Stop Time
+			func_exec_time = func_stop_time - func_start_time # Calculate the Difference
+			
+			print(f"Done. Execution Time is {func_exec_time:.3f} seconds")
 			sleep(2)
 			print ("")
 			
