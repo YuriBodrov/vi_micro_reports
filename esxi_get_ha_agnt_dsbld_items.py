@@ -1,6 +1,6 @@
-# Project Name  : 										Report-as-a-Service  
+# Project Name  :  Virtual Infrastructure's Micro Reports  
 # ------------------------------------------------------- 
-# Module Name   :         					    esxihaagentdis.py 
+# Module Name   :         esxi_get_ha_agnt_dsbld_items.py 
 # Created by    :       									 Yuri P. Bodrov 
 # Email         : 									 bodrovyp@hotmail.com 
 # Phone Number  :         									 +79259929596 
@@ -12,21 +12,26 @@ NOTE : This Module is designed to Collect ESXi Hypervisors with
 												    vSphere HA Agent in Disabled State.
 """
 #########################################################################################
+from interaction_methods_set import InteractMethodsClass as IMClass # Apply Text Styles
 from sys import stdout             # Function for an Output Print Options
 from dataclasses import dataclass  # Namespace for Operations with Data Classes
 from time import sleep             # Function for the Time Delaying
+from time import perf_counter      # Function to Get Method's Runtime
 from pyVmomi import vim            # Namespace for a Core Operations with VI Objects
 import openpyxl                    # For an Operations with MS Excel File(s)
 
-@dataclass # Main Class of this Module 'esxihaagentdis.py'
+@dataclass # Main Class of this Module 'esxi_get_ha_agnt_dsbld_items.py'
 class GetESXisHAAgentDisabledClass(): ###################################################
 	pass
 	connstate  : bool                # Is vCenter Server Connected : True/False
 	vc_instance: vim.ServiceInstance # Passing SmartConnect Service Instance
-	#esxi_ha_agnt_dsbld_list = []
 
 	def get_esxi_ha_agent_dis_func(self): #################################################
 		pass
+		
+		func_start_time = 0.0
+		func_start_time = perf_counter() # Record the Start Time
+		
 		vi_content = self.vc_instance.RetrieveContent()
 		if ((vi_content is not None) and (self.connstate)):
 			container = vi_content.rootFolder # Root/Parent Directory Starting Point
@@ -38,7 +43,7 @@ class GetESXisHAAgentDisabledClass(): ##########################################
 																															 recursive)
 
 			# Open and Initialize the Existing(!) MS Excel File
-			xlsx_wb = openpyxl.load_workbook("report.xlsx")
+			xlsx_wb = openpyxl.load_workbook("vi_micro_report.xlsx")
 
 			# Create a Thematic Sheet and Set it as Active
 			if (not ("esxi_ha_agent_disabled" in xlsx_wb.sheetnames)):
@@ -48,48 +53,33 @@ class GetESXisHAAgentDisabledClass(): ##########################################
 
 				# Set the Column Headers of Active XLSX Sheet
 				column_header_list = ["ESXi Server", "vSphere HA Agent State"]
-				active_xlsx_sheet.append(column_header_list) # type: ignore
-				xlsx_wb.save("report.xlsx")                  # type: ignore
+				active_xlsx_sheet.append(column_header_list) 					# type: ignore
+				xlsx_wb.save("vi_micro_report.xlsx")                  # type: ignore
 			else:
 				pass
 				active_xlsx_sheet = xlsx_wb["esxi_ha_agent_disabled"] # type: ignore
 		
 			stdout.write(f"[INFO] : HA Agent Disabled. Collecting ESXi Hostnames...")
 			stdout.flush()
-			#print("-" * 56)
 			for host in container_view.view:
-				#print(f"ESXi Server : {host.name}")
-				das_info = host.runtime.dasHostState
+				das_info = host.runtime.dasHostState									# type: ignore
 
 				if (das_info and hasattr(das_info, "state")):
-					#print(f"	vSphere HA State: {das_info.state}")
 					pass
 				else:
-					#print(f"	vSphere HA State: Disabled or Unset")
-					#self.esxi_ha_agnt_dsbld_list.append(host.name)
 					pass
 					xlsx_data = (host.name, "Disabled")
-					active_xlsx_sheet.append(xlsx_data) # type: ignore
-					xlsx_wb.save("report.xlsx")         # type: ignore
+					active_xlsx_sheet.append(xlsx_data) 								# type: ignore
+					xlsx_wb.save("vi_micro_report.xlsx")         				# type: ignore
 
-				
-				"""
-				ha_statuses = {}
-				if (cluster.runtime and cluster.runtime.dasFdmHostState):
-					for fdm_state in cluster.runtime.dasFdmHostState:
-						ha_statuses[fdm_state.host._moId] = fdm_state.state
+			imclass_instance = IMClass(xlsx_wb, active_xlsx_sheet, "vi_micro_report.xlsx")
+			imclass_instance.add_text_style_func()
+			
+			container_view.Destroy() # to Avoid Memory Accumulation in the vCenter Server
 
-				
-				for host in cluster.name.host:
-					ha_state = ha_statuses.get(host._moId, "HA Disabled / Unknown")
-					print(f"ESXi : {host.name:<25} | HA Agent State : {ha_state}")
-				# Check If HA Enabled in the Particular Cluster
-				#ha_enabled_bool = cluster.configuration.dasConfig.enabled
-				# If Disabled, then Add into the List
-				#if (not ha_enabled_bool):
-				#	self.clusters_ha_disabled_list.append(cluster.name)
-				# Map 'dasFdmHostState' Elements 
-				"""
-			print("Done.")
-			print("")
-			sleep(2)
+		func_stop_time = perf_counter() 											   # Record the Stop Time
+		func_exec_time = func_stop_time - func_start_time        # Calculate the Difference
+			
+		print(f"Done. Execution Time is {func_exec_time:.3f} seconds")
+		print("")
+		sleep(2)
